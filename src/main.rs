@@ -1,14 +1,8 @@
 use std::cmp::Ordering::*;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use regex::Regex;
 
 fn main() {
-    let re = Regex::new(r"(\d+)\s(.+?)\s(\w{2}\s\d{5})").unwrap();
-    let text = "123 Main Street St. Louisville OH 43071, 432 Main Long Road St. Louisville OH 43071,786 High Street Pollocksville NY 56432";
-    //let caps = re.captures(text).unwrap();
-    for caps in re.captures_iter(text) {
-        println!("{:?}", caps);
-    }
 }
 
 // https://www.codewars.com/kata/52761ee4cffbc69732000738
@@ -290,4 +284,60 @@ fn travel_tests() {
       100 Pussy Cat Rd. Chicago OH 13201");
     travel_test(r, "AA 45522", "AA 45522:Paris St. Abbeville,Paris St. Abbeville/67,670");
     travel_test(r, "OH 430", "OH 430:/");
+}
+
+// https://www.codewars.com/kata/55cf3b567fc0e02b0b00000b
+fn int_part(n: u32) -> String {
+    println!("n={}", n);
+    let mut products_acc = HashSet::new();
+
+    let mut cur_part: Vec<u32> = vec![0; n as usize];
+    cur_part[0] = n;
+    products_acc.insert(n);
+    println!("part={:?}", cur_part);
+    while cur_part[0] > 1 {
+        let mut last_not_one_index: usize = 0;
+        for k in (0..(n as usize)).rev() {
+            if cur_part[k] > 1 {
+                last_not_one_index = k;
+                break;
+            }
+        }
+        for j in (last_not_one_index + 1)..(n as usize) {
+            if cur_part[last_not_one_index] - 1 > cur_part[j] {
+                cur_part[last_not_one_index] -= 1;
+                cur_part[j] += 1;
+                break;
+            }
+        }
+        println!("part={:?}", cur_part);
+        products_acc.insert(cur_part.iter().filter(|&&i| i > 0).product());
+    }
+
+    let mut products: Vec<u32> = products_acc.iter().map(|&i| i).collect();
+    products.sort();
+    let range = products.last().unwrap() - products.first().unwrap();
+    let s: u32 = products.iter().sum();
+    let average: f32 = s as f32 / products.len() as f32;
+    let m = products.len() / 2;
+    let median = match products.len() % 2 == 0 {
+        true => (products[m - 1] + products[m]) as f32 / 2f32,
+        false => products[m] as f32
+    };
+    println!("products={:?}", products);
+    format!("Range: {} Average: {:.2} Median: {:.2}", range, average, median)
+}
+
+fn part_test(ans: &str, sol: &str) {
+    assert!(ans == sol, "Expected \"{}\", got \"{}\".", sol, ans);
+}
+
+#[test]
+fn part_tests() {
+    part_test(&int_part(1), "Range: 0 Average: 1.00 Median: 1.00");
+    part_test(&int_part(2), "Range: 1 Average: 1.50 Median: 1.50");
+    part_test(&int_part(3), "Range: 2 Average: 2.00 Median: 2.00");
+    part_test(&int_part(4), "Range: 3 Average: 2.50 Median: 2.50");
+    part_test(&int_part(5), "Range: 5 Average: 3.50 Median: 3.50");
+    part_test(&int_part(6), "Range: 8 Average: 4.75 Median: 4.50");
 }
