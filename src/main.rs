@@ -287,44 +287,88 @@ fn travel_tests() {
 }
 
 // https://www.codewars.com/kata/55cf3b567fc0e02b0b00000b
-fn int_part(n: u32) -> String {
-    println!("n={}", n);
-    let mut products_acc = HashSet::new();
 
-    let mut cur_part: Vec<u32> = vec![0; n as usize];
-    cur_part[0] = n;
-    products_acc.insert(n);
-    println!("part={:?}", cur_part);
-    while cur_part[0] > 1 {
-        let mut last_not_one_index: usize = 0;
-        for k in (0..(n as usize)).rev() {
-            if cur_part[k] > 1 {
-                last_not_one_index = k;
-                break;
-            }
+#[derive(Clone)]
+struct PartitionIter {
+    pub n: u32,
+
+    partition: Vec<u32>,
+    last_not_one_index: usize,
+    started: bool,
+    finished: bool
+}
+
+impl PartitionIter {
+    pub fn new(n: u32) -> PartitionIter {
+        PartitionIter {
+            n,
+            partition: Vec::with_capacity(n as usize),
+            last_not_one_index: 0,
+            started: false,
+            finished: false,
         }
-        for j in (last_not_one_index + 1)..(n as usize) {
-            if cur_part[last_not_one_index] - 1 > cur_part[j] {
-                cur_part[last_not_one_index] -= 1;
-                cur_part[j] += 1;
-                break;
-            }
-        }
-        println!("part={:?}", cur_part);
-        products_acc.insert(cur_part.iter().filter(|&&i| i > 0).product());
     }
+}
 
+impl Iterator for PartitionIter {
+    type Item = Vec<u32>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.finished {
+            return None
+        }
+
+        if !self.started {
+            self.partition.push(self.n);
+            self.started = true;
+            return Some(self.partition.clone());
+        }
+
+        if self.n == 1 {
+            self.finished = true;
+            return None;
+        }
+
+        if self.partition[self.last_not_one_index] == 2 {
+            self.partition[self.last_not_one_index] = 1;
+            self.partition.push(1);
+            if self.last_not_one_index == 0 {
+                self.finished = true;
+            } else {
+                self.last_not_one_index -= 1;
+            }
+            return Some(self.partition.clone())
+        }
+        let replacement = self.partition[self.last_not_one_index] - 1;
+        let total_replaced = replacement + (self.partition.len() - self.last_not_one_index) as u32;
+        let reps = total_replaced / replacement;
+        let rest = total_replaced % replacement;
+        self.partition.drain(self.last_not_one_index..);
+        self.partition.extend_from_slice(&vec![replacement; reps as usize]);
+        if rest > 0 {
+            self.partition.push(rest);
+        }
+        self.last_not_one_index = self.partition.len() - (self.partition.last().cloned().unwrap() == 1) as usize  - 1;
+        Some(self.partition.clone())
+    }
+}
+
+fn int_part(n: u32) -> String {
+    let mut products_acc: HashSet<u32> = HashSet::new();
+    let partitions = PartitionIter::new(n);
+    for p in partitions {
+        products_acc.insert(p.iter().product());
+    }
     let mut products: Vec<u32> = products_acc.iter().map(|&i| i).collect();
     products.sort();
     let range = products.last().unwrap() - products.first().unwrap();
-    let s: u32 = products.iter().sum();
-    let average: f32 = s as f32 / products.len() as f32;
+    let sum: u32 = products.iter().sum();
+    let average: f32 = sum as f32 / products.len() as f32;
     let m = products.len() / 2;
     let median = match products.len() % 2 == 0 {
         true => (products[m - 1] + products[m]) as f32 / 2f32,
         false => products[m] as f32
     };
-    println!("products={:?}", products);
     format!("Range: {} Average: {:.2} Median: {:.2}", range, average, median)
 }
 
