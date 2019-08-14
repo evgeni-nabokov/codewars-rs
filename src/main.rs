@@ -1,5 +1,5 @@
 use std::cmp::Ordering::*;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use regex::Regex;
 
 fn main() {
@@ -287,7 +287,6 @@ fn travel_tests() {
 }
 
 // https://www.codewars.com/kata/55cf3b567fc0e02b0b00000b
-
 #[derive(Clone)]
 struct PartitionIter {
     pub n: u32,
@@ -322,10 +321,7 @@ impl Iterator for PartitionIter {
             self.partition.push(self.n);
             self.started = true;
             return Some(self.partition.clone());
-        }
-
-        if self.n == 1 {
-            self.finished = true;
+        } else if self.n == 1 {
             return None;
         }
 
@@ -348,26 +344,22 @@ impl Iterator for PartitionIter {
         if rest > 0 {
             self.partition.push(rest);
         }
-        self.last_not_one_index = self.partition.len() - (self.partition.last().cloned().unwrap() == 1) as usize  - 1;
+        self.last_not_one_index = self.partition.len() - (self.partition.last().cloned().unwrap() == 1) as usize - 1;
         Some(self.partition.clone())
     }
 }
 
 fn int_part(n: u32) -> String {
-    let mut products_acc: HashSet<u32> = HashSet::new();
-    let partitions = PartitionIter::new(n);
-    for p in partitions {
-        products_acc.insert(p.iter().product());
-    }
-    let mut products: Vec<u32> = products_acc.iter().map(|&i| i).collect();
+    let mut products: Vec<u32> = PartitionIter::new(n).map(|x| x.iter().product()).collect();
     products.sort();
+    products.dedup();
     let range = products.last().unwrap() - products.first().unwrap();
     let sum: u32 = products.iter().sum();
     let average: f32 = sum as f32 / products.len() as f32;
-    let m = products.len() / 2;
+    let middle = products.len() / 2;
     let median = match products.len() % 2 == 0 {
-        true => (products[m - 1] + products[m]) as f32 / 2f32,
-        false => products[m] as f32
+        true => (products[middle - 1] + products[middle]) as f32 / 2f32,
+        false => products[middle] as f32
     };
     format!("Range: {} Average: {:.2} Median: {:.2}", range, average, median)
 }
