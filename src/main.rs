@@ -1,5 +1,5 @@
 use std::cmp::Ordering::*;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use regex::Regex;
 
 fn main() {
@@ -123,20 +123,6 @@ fn comp_tests() {
     comp_test(a1, a2, false);
 }
 
-fn generate_primes(bound: u64) -> Vec<u64> {
-    let mut primes: Vec<bool> = (0..bound + 1).map(|num| num == 2 || num & 1 != 0).collect();
-    let mut num = 3u64;
-    while num * num <= bound {
-        let mut j: u64 = num * num;
-        while j <= bound {
-            primes[j as usize] = false;
-            j += num;
-        }
-        num += 2;
-    }
-    primes.into_iter().enumerate().skip(2).filter_map(|(i, p)| if p {Some(i as u64)} else {None}).collect::<Vec<u64>>()
-}
-
 fn backwards_prime(start: u64, stop: u64) -> Vec<u64> {
     let mut b_prime_numbers: Vec<u64> = Vec::with_capacity((stop - start / 3) as usize);
     for n in start..stop + 1 {
@@ -148,6 +134,16 @@ fn backwards_prime(start: u64, stop: u64) -> Vec<u64> {
         }
     }
     b_prime_numbers
+}
+
+fn reverse(n: u64) -> u64 {
+    let mut nn = n.clone();
+    let mut rn: u64 = 0;
+    while nn > 0 {
+        rn = rn * 10 + nn % 10;
+        nn = nn / 10;
+    }
+    rn
 }
 
 fn is_prime(n: u64)  -> bool {
@@ -162,17 +158,6 @@ fn is_prime(n: u64)  -> bool {
     }
     true
 }
-
-fn reverse(n: u64) -> u64 {
-    let mut nn = n.clone();
-    let mut rn: u64 = 0;
-    while nn > 0 {
-        rn = rn * 10 + nn % 10;
-        nn = nn / 10;
-    }
-    rn
-}
-
 static PRIME_NUMBERS: [u64; 551] = [
     2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,
     103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,
@@ -269,7 +254,8 @@ fn travel_test(r: &str, zipcode:&str, exp: &str) -> () {
 
 #[test]
 fn travel_tests() {
-    let r = &String::from("123 Main Street St. Louisville OH 43071, 432 Main Long Road St. Louisville OH 43071,786 High Street Pollocksville NY 56432,
+    let r = &String::from("123 Main Street St. Louisville OH 43071,
+      432 Main Long Road St. Louisville OH 43071, 786 High Street Pollocksville NY 56432,
       54 Holy Grail Street Niagara Town ZP 32908, 3200 Main Rd. Bern AE 56210,1 Gordon St. Atlanta RE 13000,
       10 Pussy Cat Rd. Chicago EX 34342, 10 Gordon St. Atlanta RE 13000, 58 Gordon Road Atlanta RE 13000,
       22 Tokyo Av. Tedmondville SW 43098, 674 Paris bd. Abbeville AA 45521, 10 Surta Alley Goodtown GG 30654,
@@ -284,6 +270,100 @@ fn travel_tests() {
       100 Pussy Cat Rd. Chicago OH 13201");
     travel_test(r, "AA 45522", "AA 45522:Paris St. Abbeville,Paris St. Abbeville/67,670");
     travel_test(r, "OH 430", "OH 430:/");
+}
+
+// https://www.codewars.com/kata/54d81488b981293527000c8f
+fn sum_pairs_naive(numbers: &[i8], s: i8) -> Option<(i8, i8)> {
+    let mut left: usize = numbers.len() - 1;
+    let mut right: usize = numbers.len() - 1;
+    let mut i: usize = 0;
+    while i < right {
+        for j in (i + 1)..right + 1 {
+            if numbers[i] + numbers[j] == s {
+                if j < right || (j == right && i < left) {
+                    left = i;
+                    right = j;
+                }
+                break;
+            }
+        }
+        i += 1;
+    }
+    if left != right {
+        Some((numbers[left], numbers[right]))
+    } else {
+        return None;
+    }
+}
+
+fn sum_pairs_slow(numbers: &[i8], s: i8) -> Option<(i8, i8)> {
+    for right in 1..numbers.len() {
+        for left in 0..right {
+            if numbers[left] + numbers[right] == s {
+                return Some((numbers[left], numbers[right]));
+            }
+        }
+    }
+    None
+}
+
+fn sum_pairs(numbers: &[i8], s: i8) -> Option<(i8, i8)> {
+    let mut cache: HashSet<i8> = HashSet::new();
+    cache.insert(numbers[0]);
+    for i in 1..numbers.len() {
+        let a = s - numbers[i];
+        if cache.contains(&a) {
+            return Some((a, numbers[i]))
+        } else {
+            cache.insert(numbers[i]);
+        }
+    }
+    None
+}
+
+#[test]
+fn sum_pairs_tests() {
+    let l1 = [1, 4, 8, 7, 3, 15];
+    let l2 = [1, -2, 3, 0, -6, 1];
+    let l3 = [20, -13, 40];
+    let l4 = [1, 2, 3, 4, 1, 0];
+    let l5 = [10, 5, 2, 3, 7, 5];
+    let l6 = [4, -2, 3, 3, 4];
+    let l7 = [0, 2, 0];
+    let l8 = [5, 9, 13, -3];
+    assert_eq!(sum_pairs(&l1, 8), Some((1, 7)));
+    assert_eq!(sum_pairs(&l2, -6), Some((0, -6)));
+    assert_eq!(sum_pairs(&l3, -7), None);
+    assert_eq!(sum_pairs(&l4, 2), Some((1, 1)));
+    assert_eq!(sum_pairs(&l5, 10), Some((3, 7)));
+    assert_eq!(sum_pairs(&l6, 8), Some((4, 4)));
+    assert_eq!(sum_pairs(&l7, 0), Some((0, 0)));
+    assert_eq!(sum_pairs(&l8, 10), Some((13, -3)));
+}
+
+fn prime_gap(g: i32, m: u64, n: u64) -> Option<(u64, u64)> {
+    'outer: for l in m..(n - g as u64 + 1) {
+        if !is_prime(l) { continue; }
+        let r = l + g as u64;
+        if !is_prime(r) { continue; }
+        for k in (l + 1)..(r) {
+            if is_prime(k) { continue 'outer; }
+        }
+        return Some((l, r));
+    }
+    None
+}
+
+fn prime_gap_test(g: i32, m: u64, n: u64, exp: Option<(u64, u64)>) -> () {
+    assert_eq!(prime_gap(g, m, n), exp)
+}
+
+#[test]
+fn prime_gap_tests() {
+    prime_gap_test(2,100,110, Some((101, 103)));
+    prime_gap_test(4,100,110, Some((103, 107)));
+    prime_gap_test(6,100,110, None);
+    prime_gap_test(8,300,400, Some((359, 367)));
 }
 
 // https://www.codewars.com/kata/55cf3b567fc0e02b0b00000b
@@ -376,4 +456,43 @@ fn part_tests() {
     part_test(&int_part(4), "Range: 3 Average: 2.50 Median: 2.50");
     part_test(&int_part(5), "Range: 5 Average: 3.50 Median: 3.50");
     part_test(&int_part(6), "Range: 8 Average: 4.75 Median: 4.50");
+}
+
+// https://www.codewars.com/kata/56a5d994ac971f1ac500003e
+fn longest_consec(strarr: Vec<&str>, k: usize) -> String {
+    if strarr.is_empty() || k <= 0 || k > strarr.len() { return String::new() }
+
+    // Initialization by first k elements.
+    let mut sliding_sum: usize = strarr.iter().take(k).map(|s| s.len()).sum();
+    let mut max_sum = sliding_sum;
+    let mut max_sum_start_index = 0;
+    sliding_sum -= strarr[0].len();
+
+    for i in k..strarr.len() {
+        sliding_sum += strarr[i].len();
+        let start_index = i - k + 1;
+        if max_sum < sliding_sum {
+            max_sum = sliding_sum;
+            max_sum_start_index = start_index;
+        }
+        sliding_sum -= strarr[start_index].len();
+    }
+    let result: Vec<&str> = strarr.iter().skip(max_sum_start_index).take(k).cloned().collect();
+    result.concat()
+}
+
+fn longest_consec_test(strarr: Vec<&str>, k: usize, exp: &str) {
+    assert_eq!(&longest_consec(strarr, k), exp)
+}
+
+#[test]
+fn longest_consec_tests() {
+    longest_consec_test(vec!["abigail", "zone", "theta", "form", "libe", "zas"], 1, "abigail");
+    longest_consec_test(vec!["zone", "abigail", "theta", "form", "libe", "zas"], 2, "abigailtheta");
+    longest_consec_test(vec!["ejjjjmmtthh", "zxxuueeg", "aanlljrrrxx", "dqqqaaabbb", "oocccffuucccjjjkkkjyyyeehh"], 1,
+            "oocccffuucccjjjkkkjyyyeehh");
+    longest_consec_test(vec![], 3, "");
+    longest_consec_test(vec!["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 3, "ixoyx3452zzzzzzzzzzzz");
+    longest_consec_test(vec!["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 15, "");
+    longest_consec_test(vec!["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 0, "");
 }
