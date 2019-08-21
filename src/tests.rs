@@ -150,3 +150,9 @@ fn longest_consec_tests() {
     longest_consec_test(vec!["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 15, "");
     longest_consec_test(vec!["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 0, "");
 }
+
+#[test]
+fn product_fib_tests() {
+    assert_eq!(product_fib(4895), (55, 89, true));
+    assert_eq!(product_fib(5895), (89, 144, false));
+}

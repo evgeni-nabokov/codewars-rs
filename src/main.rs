@@ -349,7 +349,18 @@ fn longest_consec(strarr: Vec<&str>, k: usize) -> String {
     result.concat()
 }
 
-
 fn longest_consec_test(strarr: Vec<&str>, k: usize, exp: &str) {
     assert_eq!(&longest_consec(strarr, k), exp)
+}
+
+// https://www.codewars.com/kata/5541f58a944b85ce6d00006a
+fn product_fib(prod: u64) -> (u64, u64, bool) {
+    let mut f0 = 0u64;
+    let mut f1 = 1u64;
+    while f0 * f1 < prod {
+        let tmp = f1;
+        f1 += f0;
+        f0 = tmp;
+    }
+    (f0, f1, f0 * f1 == prod)
 }
