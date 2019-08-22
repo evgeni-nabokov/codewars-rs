@@ -1,5 +1,7 @@
+use std::cmp;
 use std::cmp::Ordering::*;
 use std::collections::{HashMap, HashSet};
+use std::iter;
 use regex::Regex;
 
 #[cfg(test)]
@@ -363,4 +365,58 @@ fn product_fib(prod: u64) -> (u64, u64, bool) {
         f0 = tmp;
     }
     (f0, f1, f0 * f1 == prod)
+}
+
+// https://www.codewars.com/kata/5629db57620258aa9d000014
+fn count_and_filter_chars(s: &str) -> HashMap<char, usize> {
+    let mut map = s.chars()
+        .filter(|c| c.is_ascii_lowercase())
+        .fold(HashMap::new(), |mut acc, item| {
+            acc.entry(item).and_modify(|c| *c += 1).or_insert(1);
+            acc
+        });
+    map.retain(|_, c| *c > 1);
+    map
+}
+
+fn mix(s1: &str, s2: &str) -> String {
+    let map1 = count_and_filter_chars(s1);
+    let map2 = count_and_filter_chars(s2);
+    let mut all_letters: HashSet<char> = HashSet::new();
+    all_letters.extend(map1.keys());
+    all_letters.extend(map2.keys());
+    let mut list: Vec<(u8, usize, char)> = Vec::with_capacity(all_letters.len());
+    for ch in all_letters {
+        let c1 = map1.get(&ch).unwrap_or(&0usize).clone();
+        let c2 = map2.get(&ch).unwrap_or(&0usize).clone();
+        list.push((
+            // Selected string number: 1, or 2, or 3 (i.e. '=').
+            match c1.cmp(&c2) {
+                Greater => 1,
+                Less => 2,
+                Equal => 3
+            },
+            // Count.
+            cmp::max(c1, c2),
+            // Char.
+            ch
+        ));
+    }
+    // Sorting by 1) Count (desc), 2) String number (asc), 3) Char (asc).
+    list.sort_unstable_by(|a, b|
+        match b.1.cmp(&a.1) {
+            Equal => match a.0.cmp(&b.0) {
+                Equal => a.2.cmp(&b.2),
+                a => a
+            },
+            b => b
+        });
+    let result = list.iter()
+        .map(|x| format!("{}:{}",
+                         match x.0 { 1 => "1", 2 => "2", _ => "=" },
+                         iter::repeat(x.2).take(x.1).collect::<String>(),
+        ))
+        .collect::<Vec<String>>()
+        .join("/");
+    result
 }
