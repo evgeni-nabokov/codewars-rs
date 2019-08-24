@@ -175,3 +175,30 @@ fn mix_tests() {
              "1:nnnnn/1:ooooo/1:tttt/1:eee/1:gg/1:ii/1:mm/=:rr");
 
 }
+
+#[test]
+fn get_prime_factors_tests() -> () {
+    assert_eq!(get_prime_factors(10), vec![2, 5]);
+    assert_eq!(get_prime_factors(12), vec![2, 2, 3]);
+}
+
+fn get_kprimes_test(k: usize, start: u64, nd: u64, exp: Vec<u64>) -> () {
+    assert_eq!(get_kprimes(k, start, nd), exp)
+}
+
+#[test]
+fn get_kprimes_tests() {
+    get_kprimes_test(5, 1000, 1100, vec![1020, 1026, 1032, 1044, 1050, 1053, 1064, 1072, 1092, 1100]);
+    get_kprimes_test(12, 100000, 100100, vec![]);
+}
+
+fn puzzle_test(n: u64, exp: u8) -> () {
+    assert_eq!(puzzle(n), exp)
+}
+
+#[test]
+fn puzzle_tests() {
+    puzzle_test(100, 0);
+    puzzle_test(144, 0);
+    puzzle_test(143, 2);
+}
