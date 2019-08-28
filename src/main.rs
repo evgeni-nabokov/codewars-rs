@@ -7,7 +7,7 @@ use regex::Regex;
 #[cfg(test)]
 mod tests;
 
-static PRIME_NUMBERS: [u64; 551] = [
+const PRIME_NUMBERS: [u64; 551] = [
     2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,
     103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,
     199,211,223,227,229,233,239,241,251,257,263,269,271,277,281,283,293,307,311,
@@ -127,9 +127,9 @@ fn comp(a: Vec<i64>, b: Vec<i64>) -> bool {
 fn backwards_prime(start: u64, stop: u64) -> Vec<u64> {
     let mut b_prime_numbers: Vec<u64> = Vec::with_capacity((stop - start / 3) as usize);
     for n in start..stop + 1 {
-        if is_prime(n) {
-            let rn = reverse(n);
-            if rn != n && is_prime(rn) {
+        if is_prime(&n) {
+            let rn = reverse(&n);
+            if rn != n && is_prime(&rn) {
                 b_prime_numbers.push(n);
             }
         }
@@ -137,7 +137,7 @@ fn backwards_prime(start: u64, stop: u64) -> Vec<u64> {
     b_prime_numbers
 }
 
-fn reverse(n: u64) -> u64 {
+fn reverse(n: &u64) -> u64 {
     let mut nn = n.clone();
     let mut rn: u64 = 0;
     while nn > 0 {
@@ -147,8 +147,8 @@ fn reverse(n: u64) -> u64 {
     rn
 }
 
-fn is_prime(n: u64) -> bool {
-    match PRIME_NUMBERS.binary_search(&n) {
+fn is_prime(n: &u64) -> bool {
+    match PRIME_NUMBERS.binary_search(n) {
         Ok(_) => return true,
         Err(i) if i < PRIME_NUMBERS.len() => return false,
         _ => {
@@ -240,11 +240,11 @@ fn sum_pairs(numbers: &[i8], s: i8) -> Option<(i8, i8)> {
 // https://www.codewars.com/kata/561e9c843a2ef5a40c0000a4
 fn prime_gap(g: i32, m: u64, n: u64) -> Option<(u64, u64)> {
     'outer: for l in m..(n - g as u64 + 1) {
-        if !is_prime(l) { continue; }
+        if !is_prime(&l) { continue; }
         let r = l + g as u64;
-        if !is_prime(r) { continue; }
+        if !is_prime(&r) { continue; }
         for k in (l + 1)..(r) {
-            if is_prime(k) { continue 'outer; }
+            if is_prime(&k) { continue 'outer; }
         }
         return Some((l, r));
     }
@@ -442,7 +442,7 @@ fn get_prime_factors(n: u64) -> Vec<u64> {
 fn get_primes(start: u64, end: u64) -> Vec<u64> {
     let mut res: Vec<u64> = Vec::new();
     for n in start..(end + 1) {
-        if is_prime(n) {
+        if is_prime(&n) {
             res.push(n);
         }
     }
@@ -472,4 +472,38 @@ fn puzzle(s: u64) -> u8 {
         }
     }
     counter
+}
+
+// https://www.codewars.com/kata/5511b2f550906349a70004e1
+const LAST_DIGITS: [[i32; 4]; 10] = [
+    [0, 0, 0, 0],
+    [1, 1, 1, 1],
+    [6, 2, 4, 8],
+    [1, 3, 9, 7],
+    [6, 4, 6, 4],
+    [5, 5, 5, 5],
+    [6, 6, 6, 6],
+    [1, 7, 9, 3],
+    [6, 8, 4, 2],
+    [1, 9, 1, 9],
+];
+
+fn last_digit(str1: &str, str2: &str) -> i32 {
+    if str2 == "0" {
+        return 1;
+    }
+
+    let last_digit1 = str1.chars().last().unwrap().to_digit(10).unwrap() as usize;
+    let last_two_digits2 = if str2.len() <= 2 {
+        str2.parse::<u32>().unwrap()
+    } else {
+        str2.chars()
+            .skip(str2.len() - 2)
+            .take(2)
+            .collect::<String>()
+            .parse::<u32>()
+            .unwrap()
+    } as usize;
+
+    LAST_DIGITS[last_digit1][last_two_digits2 % 4]
 }
