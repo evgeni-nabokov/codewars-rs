@@ -423,9 +423,9 @@ fn mix(s1: &str, s2: &str) -> String {
 }
 
 // https://www.codewars.com/kata/5726f813c8dcebf5ed000a6b
-fn get_prime_factors(n: u64) -> Vec<u64> {
+fn get_prime_factors(n: &u64) -> Vec<u64> {
     let mut res: Vec<u64> = Vec::new();
-    if let Ok(i) = PRIME_NUMBERS.binary_search(&n) {
+    if let Ok(i) = PRIME_NUMBERS.binary_search(n) {
         res.push(PRIME_NUMBERS[i]);
         return res;
     }
@@ -433,7 +433,7 @@ fn get_prime_factors(n: u64) -> Vec<u64> {
     for &pn in PRIME_NUMBERS.iter() {
         if n % pn != 0 { continue; }
         res.push(pn);
-        res.extend(get_prime_factors(n / pn).iter());
+        res.extend(get_prime_factors(&(n / pn)).iter());
         break;
     }
     res
@@ -452,7 +452,7 @@ fn get_primes(start: u64, end: u64) -> Vec<u64> {
 fn get_kprimes(k: usize, start: u64, end: u64) -> Vec<u64> {
     let mut res: Vec<u64> = Vec::new();
     for n in start..(end + 1) {
-        let prime_factors = get_prime_factors(n);
+        let prime_factors = get_prime_factors(&n);
         if prime_factors.len() == k {
             res.push(n);
         }
