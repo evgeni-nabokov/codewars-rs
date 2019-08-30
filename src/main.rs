@@ -558,12 +558,31 @@ impl<T: Clone> Cons<T> {
     }
 
     pub fn map<F,S>(&self, fun: F) -> Cons<S>
-        where F: Fn(T) -> S, S: Clone
-    {
+        where F: Fn(T) -> S, S: Clone {
         match self {
             &Cons::Null => Cons::Null,
             &Cons::Cons(ref head, ref tail) =>
                 Cons::new(fun(head.clone()), tail.map(fun))
         }
     }
+}
+
+// https://www.codewars.com/kata/5ae62fcf252e66d44d00008e
+fn expressions_matter(a: u64, b: u64, c: u64) -> u64 {
+    let nums = [a * b * c, a + b + c, (a + b) * c, a * (b + c)];
+    *nums.iter().max().unwrap()
+}
+
+// https://www.codewars.com/kata/5abd66a5ccfd1130b30000a9
+fn row_weights(array: Vec<u32>) -> (u32, u32) {
+    let mut team1_sum = 0u32;
+    let mut team2_sum = 0u32;
+    for (i, &w) in array.iter().enumerate() {
+        if i % 2 == 0 {
+            team1_sum += w;
+        } else {
+            team2_sum += w;
+        }
+    }
+    (team1_sum, team2_sum)
 }
