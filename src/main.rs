@@ -507,3 +507,82 @@ fn last_digit(str1: &str, str2: &str) -> i32 {
 
     LAST_DIGITS[last_digit1][last_two_digits2 % 4]
 }
+
+// https://www.codewars.com/kata/529a92d9aba78c356b000353
+#[derive(Debug, PartialEq, Eq)]
+enum Cons<T: Clone> {
+    Cons(T, Box<Cons<T>>),
+    Null
+}
+
+impl<T: Clone> Cons<T> {
+    pub fn new(head: T, tail: Self) -> Self {
+        Cons::Cons(head, Box::new(tail))
+    }
+}
+
+impl<T: Clone> Cons<T> {
+    pub fn to_vec(&self) -> Vec<T> {
+        match self {
+            &Cons::Null => vec![],
+            &Cons::Cons(ref head, ref tail) => {
+                let mut head = vec![head.clone()];
+                head.extend(tail.to_vec());
+                head
+            }
+        }
+    }
+}
+
+impl<T: Clone> Cons<T> {
+    pub fn from_iter<I>(it: I) -> Self
+        where I: IntoIterator<Item=T> {
+
+        let mut it = it.into_iter();
+        match it.next() {
+            Some(v) => Cons::Cons(v, Box::new(Self::from_iter(it))),
+            None => Cons::Null
+        }
+    }
+
+    pub fn filter<F>(&self, fun: F) -> Self
+        where F: Fn(&T) -> bool {
+        match self {
+            &Cons::Null => Cons::Null,
+            &Cons::Cons(ref head, ref tail) => if fun(head) {
+                Cons::new(head.clone(), tail.filter(fun))
+            } else {
+                tail.filter(fun)
+            }
+        }
+    }
+
+    pub fn map<F,S>(&self, fun: F) -> Cons<S>
+        where F: Fn(T) -> S, S: Clone {
+        match self {
+            &Cons::Null => Cons::Null,
+            &Cons::Cons(ref head, ref tail) =>
+                Cons::new(fun(head.clone()), tail.map(fun))
+        }
+    }
+}
+
+// https://www.codewars.com/kata/5ae62fcf252e66d44d00008e
+fn expressions_matter(a: u64, b: u64, c: u64) -> u64 {
+    let nums = [a * b * c, a + b + c, (a + b) * c, a * (b + c)];
+    *nums.iter().max().unwrap()
+}
+
+// https://www.codewars.com/kata/5abd66a5ccfd1130b30000a9
+fn row_weights(array: Vec<u32>) -> (u32, u32) {
+    let mut team1_sum = 0u32;
+    let mut team2_sum = 0u32;
+    for (i, &w) in array.iter().enumerate() {
+        if i % 2 == 0 {
+            team1_sum += w;
+        } else {
+            team2_sum += w;
+        }
+    }
+    (team1_sum, team2_sum)
+}

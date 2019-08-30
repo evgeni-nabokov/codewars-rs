@@ -214,3 +214,73 @@ fn last_digit_tests() {
     assert_eq!(last_digit("3715290469715693021198967285016729344580685479654510946723",
                           "68819615221552997273737174557165657483427362207517952651"), 7);
 }
+
+#[test]
+fn cons_create_from_vec_test() {
+    assert_eq!(Cons::from_iter(Vec::<i32>::new()), Cons::Null);
+
+    assert_eq!(Cons::from_iter(vec![1,2,3,4,5]).to_vec(),
+               vec![1,2,3,4,5]);
+}
+
+#[test]
+fn cons_filter_test() {
+    assert_eq!(Cons::from_iter(vec![1,2,3,4,5])
+                   .filter(|&n| n > 3)
+                   .to_vec(),
+               vec![4,5]);
+
+    assert_eq!(Cons::from_iter(vec![1,2,3,4,5])
+                   .filter(|&n| n > 5),
+               Cons::Null);
+}
+
+#[test]
+fn cons_map_test() {
+    assert_eq!(Cons::from_iter(vec!["1","2","3","4","5"])
+                   .map(str::parse::<i32>)
+                   .map(Result::unwrap)
+                   .to_vec(),
+               vec![1,2,3,4,5]);
+}
+
+#[test]
+fn cans_filter_map_test() {
+    assert_eq!(Cons::from_iter(vec![1,2,3,4,5])
+                   .filter(|n| n % 2 == 0)
+                   .map(|x| x.to_string())
+                   .to_vec(),
+               ["2","4"]);
+}
+
+#[test]
+fn expressions_matter_tests() {
+    assert_eq!(expressions_matter(2, 1, 2), 6);
+    assert_eq!(expressions_matter(1, 1, 1), 3);
+    assert_eq!(expressions_matter(2, 1, 1), 4);
+    assert_eq!(expressions_matter(1, 2, 3), 9);
+    assert_eq!(expressions_matter(1, 3, 1), 5);
+    assert_eq!(expressions_matter(2, 2, 2), 8);
+
+    assert_eq!(expressions_matter(5, 1, 3), 20);
+    assert_eq!(expressions_matter(3, 5, 7), 105);
+    assert_eq!(expressions_matter(5, 6, 1), 35);
+    assert_eq!(expressions_matter(1, 6, 1), 8);
+    assert_eq!(expressions_matter(2, 6, 1), 14);
+    assert_eq!(expressions_matter(6, 7, 1), 48);
+
+    assert_eq!(expressions_matter(2, 10, 3), 60);
+    assert_eq!(expressions_matter(1, 8, 3), 27);
+    assert_eq!(expressions_matter(9, 7, 2), 126);
+    assert_eq!(expressions_matter(1, 1, 10), 20);
+    assert_eq!(expressions_matter(9, 1, 1), 18);
+    assert_eq!(expressions_matter(10, 5, 6), 300);
+    assert_eq!(expressions_matter(1, 10, 1), 12);
+}
+
+#[test]
+fn row_weights_tests() {
+    assert_eq!(row_weights(vec![13, 27, 49]), (62, 27));
+    assert_eq!(row_weights(vec![50, 60, 70, 80]), (120, 140));
+    assert_eq!(row_weights(vec![80]), (80,0));
+}
