@@ -586,3 +586,14 @@ fn row_weights(array: Vec<u32>) -> (u32, u32) {
     }
     (team1_sum, team2_sum)
 }
+
+// https://www.codewars.com/kata/59df2f8f08c6cec835000012
+fn meeting(s: &str) -> String {
+    let upper_s = s.to_uppercase();
+    let mut parsed_s = upper_s.split(';').map(|x| x.split(':').collect::<Vec<_>>()).collect::<Vec<Vec<_>>>();
+    parsed_s.sort_unstable_by(|x, y| match x[1].cmp(y[1]) {
+        Equal => x[0].cmp(y[0]),
+        not_equal => not_equal
+    });
+    parsed_s.iter().map(|x| format!("({}, {})", x[1], x[0])).collect::<String>()
+}
