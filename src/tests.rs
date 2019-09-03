@@ -300,5 +300,35 @@ fn meeting_tests() {
                  "(BELL, MEGAN)(CORNWELL, AMBER)(DORNY, JAMES)(DORRIES, PAUL)(GATES, JOHN)(KERN, ANN)(KORN, ANNA)(META, ALEX)(RUSSEL, ELIZABETH)(STEVE, LEWIS)(WAHL, MICHAEL)");
     meeting_test("Alex:Arno;Alissa:Cornwell;Sarah:Bell;Andrew:Dorries;Ann:Kern;Haley:Arno;Paul:Dorny;Madison:Kern",
                  "(ARNO, ALEX)(ARNO, HALEY)(BELL, SARAH)(CORNWELL, ALISSA)(DORNY, PAUL)(DORRIES, ANDREW)(KERN, ANN)(KERN, MADISON)");
+}
 
+#[test]
+fn modpow_tests() {
+    //assert_eq!(modpow(2, 5, 10), 2);
+    assert_eq!(modpow(2546, 556, 3), 1);
+}
+
+#[test]
+fn last_digit2_tests() {
+    let tests = vec![
+        (vec![], 1),
+        (vec![0], 0),
+        (vec![0, 0], 1),
+        (vec![0, 0, 0], 0),
+        (vec![0, 0, 0, 0, 0, 0, 0, 0], 1),
+        (vec![1, 2], 1),
+        (vec![3, 4, 5], 1),
+        (vec![4, 3, 6], 4),
+        (vec![7, 6, 21], 1),
+        (vec![12, 30, 21], 6),
+        (vec![2, 2, 2, 0], 4),
+        (vec![937640, 767456, 981242], 0),
+        (vec![123232, 694022, 140249], 6),
+        (vec![499942, 898102, 846073], 6),
+        (vec![2147483647, 2147483647, 2147483647, 2147483647], 3)
+    ];
+
+    for test in tests {
+        assert_eq!(last_digit2(&test.0), test.1);
+    }
 }
