@@ -691,3 +691,35 @@ fn last_digit2(list: &[u64]) -> u64 {
     }
 }
 
+
+// https://www.codewars.com/kata/51ba717bb08c1cd60f00002f
+fn acc_to_string(acc: &[i32]) -> String {
+    match acc.len() {
+        0 => String::new(),
+        1 => format!("{}", acc[0]),
+        2 => format!("{},{}", acc[0], acc[1]),
+        _ => format!("{}-{}", acc.first().unwrap(), acc.last().unwrap())
+    }
+}
+fn range_extraction(a: &[i32]) -> String {
+    let mut res: Vec<String> = Vec::new();
+    let mut acc: Vec<i32> = Vec::new();
+    for &n in a {
+        if acc.is_empty() {
+            acc.push(n);
+            continue;
+        }
+
+        if acc.last().unwrap() + 1 == n {
+            acc.push(n);
+        } else {
+            res.push(acc_to_string(&acc));
+            acc.clear();
+            acc.push(n);
+        }
+    }
+    if !acc.is_empty() {
+        res.push(acc_to_string(&acc));
+    }
+    res.join(",")
+}
