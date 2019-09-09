@@ -338,3 +338,22 @@ fn range_extraction_tests() {
     assert_eq!(range_extraction(&[-6,-3,-2,-1,0,1,3,4,5,7,8,9,10,11,14,15,17,18,19,20]), "-6,-3-1,3-5,7-11,14,15,17-20");
     assert_eq!(range_extraction(&[-3,-2,-1,2,10,15,16,18,19,20]), "-3--1,2,10,15,16,18-20");
 }
+
+fn buddy_numbers_test(start: i64, limit: i64, exp: Option<(i64, i64)>) -> () {
+    println!("start:{}", start);
+    println!("limit:{}", limit);
+    let ans = buddy_numbers(start, limit);
+    println!("actual:\n{:?}", ans);
+    println!("expect:\n{:?}", exp);
+    println!("{}", ans == exp);
+    assert_eq!(ans, exp);
+    println!("{}", "-");
+}
+
+#[test]
+fn buddy_numbers_tests() {
+    buddy_numbers_test(10, 50,  Some((48, 75)));
+    buddy_numbers_test(1081180, 1103735, Some((1081184, 1331967)));
+    buddy_numbers_test(271, 5128, Some((1050 , 1925)));
+    buddy_numbers_test(305047, 309143, None);
+}
