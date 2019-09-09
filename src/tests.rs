@@ -357,3 +357,12 @@ fn buddy_numbers_tests() {
     buddy_numbers_test(271, 5128, Some((1050 , 1925)));
     buddy_numbers_test(305047, 309143, None);
 }
+
+#[test]
+fn max_multiple_tests() {
+    assert_eq!(max_multiple(2,7),6);
+    assert_eq!(max_multiple(3,10),9);
+    assert_eq!(max_multiple(7,17),14);
+    assert_eq!(max_multiple(10,50),50);
+    assert_eq!(max_multiple(4,0), 0);
+}

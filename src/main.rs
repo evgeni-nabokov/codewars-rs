@@ -793,3 +793,8 @@ fn get_factors_slow(n: &u64) -> Vec<u64> {
     }
     res
 }
+
+// https://www.codewars.com/kata/5aba780a6a176b029800041c
+fn max_multiple(divisor: u32, bound: u32) -> u32 {
+    bound / divisor * divisor
+}
