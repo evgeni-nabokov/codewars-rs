@@ -723,3 +723,44 @@ fn range_extraction(a: &[i32]) -> String {
     }
     res.join(",")
 }
+
+// https://www.codewars.com/kata/53f40dff5f9d31b813000774
+// Inspired by Kahn's topological sorting algorithm [https://en.wikipedia.org/wiki/Topological_sorting].
+fn recover_secret(mut triplets: Vec<[char; 3]>) -> String {
+    let mut res: Vec<char> = Vec::new();
+    let mut i = 0usize;
+    loop {
+        if i >= triplets.len() {
+            break;
+        }
+        let ch = triplets[i][0].to_owned();
+        if ch == '\0' || char_does_follow_another(&ch, &triplets) {
+            i += 1;
+            continue;
+        }
+        res.push(ch);
+        remove_char_from_beginning(&ch, &mut triplets);
+        i = 0;
+    }
+    res.iter().map(|&x| x.to_string()).collect::<String>()
+}
+// Determines if specified char follows another char, i.e. has incoming edges.
+fn char_does_follow_another(ch: &char, triplets: &[[char; 3]]) -> bool {
+    for &triplet in triplets {
+        if triplet[1] == *ch || triplet[2] == *ch {
+            return true;
+        }
+    }
+    false
+}
+
+// Removes specified char from the beginning of each triplet and shift the rest chars.
+fn remove_char_from_beginning(ch: &char, triplets: &mut [[char; 3]]) {
+    for triplet in triplets {
+        if triplet[0] == *ch {
+            triplet[0] = triplet[1];
+            triplet[1] = triplet[2];
+            triplet[2] = '\0'; // A stub.
+        }
+    }
+}
