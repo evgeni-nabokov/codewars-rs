@@ -512,8 +512,34 @@ fn find_x_of_pseries_test(m: f64, expect: f64) -> () {
 }
 
 #[test]
-fn basic_tests() {
+fn find_x_of_pseries_tests() {
     find_x_of_pseries_test(2.00, 5.000000000000e-01);
     find_x_of_pseries_test(4.00, 6.096117967978e-01);
     find_x_of_pseries_test(5.00, 6.417424305044e-01);
+}
+
+fn sum_of_series_test(actual: f64, expected: f64) {
+    let merr = 1.0e-6;
+    let inrange =
+        if expected == 0.0 {
+            (actual.abs() <= merr)
+        } else {
+            ((actual - expected).abs() / expected <= merr)
+        };
+    if inrange == false {
+        println!("Expected value must be near: {:e} but was:{:e}", expected, actual);
+    } else {
+        //println!("....... GOOD\n");
+    }
+    assert_eq!(true, inrange);
+}
+
+#[test]
+fn sum_of_series_tests() {
+    sum_of_series_test(sum_of_series(5), 1.275);
+    sum_of_series_test(sum_of_series(6), 1.2125);
+    sum_of_series_test(sum_of_series(7), 1.173214);
+    sum_of_series_test(sum_of_series(8), 1.146651);
+    sum_of_series_test(sum_of_series(200), 1.005025);
+    sum_of_series_test(sum_of_series(379), 1.002645);
 }

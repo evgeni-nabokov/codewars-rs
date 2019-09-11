@@ -846,3 +846,16 @@ fn max_multiple(divisor: u32, bound: u32) -> u32 {
 fn find_x_of_pseries(m: f64) -> f64 {
     (2f64 * m + 1f64 - (4f64 * m + 1f64).sqrt()) / 2f64 / m
 }
+
+// https://www.codewars.com/kata/55a29405bc7d2efaff00007c
+fn sum_of_series(n: i32) -> f64 {
+    let mut denominator = 1.0;
+    let mut sum = 1.0;
+    for i in 1..n {
+        denominator *= (n - i + 1) as f64;
+        sum += 1.0 / denominator;
+    }
+    // Truncating the sum.
+    let formatted_sum = format!("{:.6}", sum);
+    formatted_sum.parse().unwrap()
+}
