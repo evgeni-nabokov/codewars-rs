@@ -470,7 +470,7 @@ fn recover_secret_tests() {
     ]), "abcdefghijklmnopqrstuvwxyz");
 }
 
-fn buddy_numbers_test(start: i64, limit: i64, exp: Option<(i64, i64)>) -> () {
+fn buddy_numbers_test(start: u64, limit: u64, exp: Option<(u64, u64)>) -> () {
     println!("start:{}", start);
     println!("limit:{}", limit);
     let ans = buddy_numbers(start, limit);
@@ -496,4 +496,24 @@ fn max_multiple_tests() {
     assert_eq!(max_multiple(7,17),14);
     assert_eq!(max_multiple(10,50),50);
     assert_eq!(max_multiple(4,0), 0);
+}
+
+fn find_x_of_pseries_test(m: f64, expect: f64) -> () {
+    let merr = 1e-12;
+    println!("{:?}", m);
+    let actual = find_x_of_pseries(m);
+    println!("Actual {:e}", actual);
+    println!("Expect {:e}", expect);
+    let inrange = (actual - expect).abs() <= merr;
+    if inrange == false {
+        println!("Expected value near: {:e} but got: {:e}", actual, expect);
+    }
+    assert_eq!(inrange, true);
+}
+
+#[test]
+fn basic_tests() {
+    find_x_of_pseries_test(2.00, 5.000000000000e-01);
+    find_x_of_pseries_test(4.00, 6.096117967978e-01);
+    find_x_of_pseries_test(5.00, 6.417424305044e-01);
 }

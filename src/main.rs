@@ -74,7 +74,7 @@ fn good_vs_evil(good: &str, evil: &str) -> String {
 fn min_value(mut digits: Vec<i32>) -> i32 {
     digits.sort();
     digits.dedup();
-    digits.iter().fold(0i32, | acc, &item| acc * 10  + item)
+    digits.iter().fold(0i32, |acc, &item| acc * 10  + item)
 }
 
 // https://www.codewars.com/kata/5648b12ce68d9daa6b000099
@@ -773,17 +773,17 @@ fn remove_char_from_beginning(ch: &char, triplets: &mut [[char; 3]]) {
 }
 
 // https://www.codewars.com/kata/59ccf051dcc4050f7800008f
-fn buddy_numbers(start: i64, limit: i64) -> Option<(i64, i64)> {
+fn buddy_numbers(start: u64, limit: u64) -> Option<(u64, u64)> {
     for n in start..=limit {
-        if is_prime(&(n as u64)) {
+        if is_prime(&n) {
             continue;
         }
-        let n_sum = get_sum_of_factors(&(n as u64)) as i64;
+        let n_sum = get_sum_of_factors(&n);
         if n_sum <= n + 1 {
             continue;
         }
         let m = n_sum - 1;
-        let m_sum = get_sum_of_factors(&(m as u64)) as i64;
+        let m_sum = get_sum_of_factors(&m);
         if m_sum == n + 1 {
             return Some((n, m))
         }
@@ -839,4 +839,10 @@ fn get_factors_slow(n: &u64) -> Vec<u64> {
 // https://www.codewars.com/kata/5aba780a6a176b029800041c
 fn max_multiple(divisor: u32, bound: u32) -> u32 {
     bound / divisor * divisor
+}
+
+// https://www.codewars.com/kata/5b1cd19fcd206af728000056
+// The sum of the power series n*x^n is equal to x / (1 - x)^2.
+fn find_x_of_pseries(m: f64) -> f64 {
+    (2f64 * m + 1f64 - (4f64 * m + 1f64).sqrt()) / 2f64 / m
 }
