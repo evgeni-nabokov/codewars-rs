@@ -125,7 +125,7 @@ fn comp(a: Vec<i64>, b: Vec<i64>) -> bool {
 // https://www.codewars.com/kata/5539fecef69c483c5a000015
 fn backwards_prime(start: u64, stop: u64) -> Vec<u64> {
     let mut b_prime_numbers: Vec<u64> = Vec::with_capacity((stop - start / 3) as usize);
-    for n in start..stop + 1 {
+    for n in start..=stop {
         if is_prime(&n) {
             let rn = reverse(&n);
             if rn != n && is_prime(&rn) {
@@ -193,7 +193,7 @@ fn sum_pairs_naive(numbers: &[i8], s: i8) -> Option<(i8, i8)> {
     let mut right: usize = numbers.len() - 1;
     let mut i: usize = 0;
     while i < right {
-        for j in (i + 1)..right + 1 {
+        for j in (i + 1)..=right {
             if numbers[i] + numbers[j] == s {
                 if j < right || (j == right && i < left) {
                     left = i;
@@ -238,7 +238,7 @@ fn sum_pairs(numbers: &[i8], s: i8) -> Option<(i8, i8)> {
 
 // https://www.codewars.com/kata/561e9c843a2ef5a40c0000a4
 fn prime_gap(g: i32, m: u64, n: u64) -> Option<(u64, u64)> {
-    'outer: for l in m..(n - g as u64 + 1) {
+    'outer: for l in m..=(n - g as u64) {
         if !is_prime(&l) { continue; }
         let r = l + g as u64;
         if !is_prime(&r) { continue; }
@@ -422,17 +422,22 @@ fn mix(s1: &str, s2: &str) -> String {
 }
 
 // https://www.codewars.com/kata/5726f813c8dcebf5ed000a6b
+// Finds prime factorization. If a number is prime, returns an empty Vec.
 fn get_prime_factors(n: &u64) -> Vec<u64> {
     let mut res: Vec<u64> = Vec::new();
-    if let Ok(i) = PRIME_NUMBERS.binary_search(n) {
-        res.push(PRIME_NUMBERS[i]);
+    if let Ok(_) = PRIME_NUMBERS.binary_search(n) {
         return res;
     }
 
     for &pn in PRIME_NUMBERS.iter() {
         if n % pn != 0 { continue; }
         res.push(pn);
-        res.extend(get_prime_factors(&(n / pn)).iter());
+        let next_factor = n / pn;
+        let factors = get_prime_factors(&next_factor);
+        if factors.is_empty() {
+            res.push(next_factor);
+        }
+        res.extend(factors.iter());
         break;
     }
     res
@@ -440,7 +445,7 @@ fn get_prime_factors(n: &u64) -> Vec<u64> {
 
 fn get_primes(start: u64, end: u64) -> Vec<u64> {
     let mut res: Vec<u64> = Vec::new();
-    for n in start..(end + 1) {
+    for n in start..=end {
         if is_prime(&n) {
             res.push(n);
         }
@@ -450,7 +455,7 @@ fn get_primes(start: u64, end: u64) -> Vec<u64> {
 
 fn get_kprimes(k: usize, start: u64, end: u64) -> Vec<u64> {
     let mut res: Vec<u64> = Vec::new();
-    for n in start..(end + 1) {
+    for n in start..=end {
         let prime_factors = get_prime_factors(&n);
         if prime_factors.len() == k {
             res.push(n);
@@ -693,14 +698,6 @@ fn last_digit2(list: &[u64]) -> u64 {
 
 
 // https://www.codewars.com/kata/51ba717bb08c1cd60f00002f
-fn acc_to_string(acc: &[i32]) -> String {
-    match acc.len() {
-        0 => String::new(),
-        1 => format!("{}", acc[0]),
-        2 => format!("{},{}", acc[0], acc[1]),
-        _ => format!("{}-{}", acc.first().unwrap(), acc.last().unwrap())
-    }
-}
 fn range_extraction(a: &[i32]) -> String {
     let mut res: Vec<String> = Vec::new();
     let mut acc: Vec<i32> = Vec::new();
@@ -724,6 +721,15 @@ fn range_extraction(a: &[i32]) -> String {
     res.join(",")
 }
 
+fn acc_to_string(acc: &[i32]) -> String {
+    match acc.len() {
+        0 => String::new(),
+        1 => format!("{}", acc[0]),
+        2 => format!("{},{}", acc[0], acc[1]),
+        _ => format!("{}-{}", acc.first().unwrap(), acc.last().unwrap())
+    }
+}
+
 // https://www.codewars.com/kata/53f40dff5f9d31b813000774
 // Inspired by Kahn's topological sorting algorithm [https://en.wikipedia.org/wiki/Topological_sorting].
 fn recover_secret(mut triplets: Vec<[char; 3]>) -> String {
@@ -744,6 +750,7 @@ fn recover_secret(mut triplets: Vec<[char; 3]>) -> String {
     }
     res.iter().map(|&x| x.to_string()).collect::<String>()
 }
+
 // Determines if specified char follows another char, i.e. has incoming edges.
 fn char_does_follow_another(ch: &char, triplets: &[[char; 3]]) -> bool {
     for &triplet in triplets {
@@ -763,4 +770,73 @@ fn remove_char_from_beginning(ch: &char, triplets: &mut [[char; 3]]) {
             triplet[2] = '\0'; // A stub.
         }
     }
+}
+
+// https://www.codewars.com/kata/59ccf051dcc4050f7800008f
+fn buddy_numbers(start: i64, limit: i64) -> Option<(i64, i64)> {
+    for n in start..=limit {
+        if is_prime(&(n as u64)) {
+            continue;
+        }
+        let n_sum = get_sum_of_factors(&(n as u64)) as i64;
+        if n_sum <= n + 1 {
+            continue;
+        }
+        let m = n_sum - 1;
+        let m_sum = get_sum_of_factors(&(m as u64)) as i64;
+        if m_sum == n + 1 {
+            return Some((n, m))
+        }
+    }
+    None
+}
+
+// Calculates sum of factors of a number using prime factorization.
+fn get_sum_of_factors(n: &u64) -> u64 {
+    let mut prime_factors: Vec<u64> = get_prime_factors(&n);
+    if prime_factors.is_empty() {
+        return 1;
+    }
+    prime_factors.push(0); // A stub for one more iteration.
+    let mut res = 1u64;
+    let mut sum_of_powers = 1;
+    let mut prev_factor = prime_factors[0];
+    let mut power = 1;
+    for &factor in prime_factors.iter() {
+        if prev_factor == factor {
+            power *= factor;
+            sum_of_powers += power;
+        } else {
+            res *= sum_of_powers;
+            power = factor;
+            sum_of_powers = 1 + factor;
+        }
+        prev_factor = factor;
+    }
+    res - *n  // Do not include the number itself.
+}
+
+fn get_sum_of_factors_slow(n: &u64) -> u64 {
+    let mut res = 0u64;
+    for f in 1..=(n / 2) {
+        if n % f == 0 {
+            res += f;
+        }
+    }
+    res
+}
+
+fn get_factors_slow(n: &u64) -> Vec<u64> {
+    let mut res: Vec<u64> = Vec::new();
+    for f in 1..=(n / 2) {
+        if n % f == 0 {
+            res.push(f);
+        }
+    }
+    res
+}
+
+// https://www.codewars.com/kata/5aba780a6a176b029800041c
+fn max_multiple(divisor: u32, bound: u32) -> u32 {
+    bound / divisor * divisor
 }

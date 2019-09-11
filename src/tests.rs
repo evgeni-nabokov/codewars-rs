@@ -339,7 +339,6 @@ fn range_extraction_tests() {
     assert_eq!(range_extraction(&[-3,-2,-1,2,10,15,16,18,19,20]), "-3--1,2,10,15,16,18-20");
 }
 
-
 #[test]
 fn recover_secret_tests() {
     assert_eq!(recover_secret(vec![
@@ -469,4 +468,32 @@ fn recover_secret_tests() {
         ['q', 'v', 'z'], ['e', 't', 'w'], ['b', 't', 'x'], ['d', 'v', 'x'], ['l', 'r', 'u'],
         ['f', 'k', 'y'], ['f', 'x', 'y'], ['h', 'm', 'n'], ['s', 'v', 'x']
     ]), "abcdefghijklmnopqrstuvwxyz");
+}
+
+fn buddy_numbers_test(start: i64, limit: i64, exp: Option<(i64, i64)>) -> () {
+    println!("start:{}", start);
+    println!("limit:{}", limit);
+    let ans = buddy_numbers(start, limit);
+    println!("actual:\n{:?}", ans);
+    println!("expect:\n{:?}", exp);
+    println!("{}", ans == exp);
+    assert_eq!(ans, exp);
+    println!("{}", "-");
+}
+
+#[test]
+fn buddy_numbers_tests() {
+    buddy_numbers_test(10, 50,  Some((48, 75)));
+    buddy_numbers_test(1081180, 1103735, Some((1081184, 1331967)));
+    buddy_numbers_test(271, 5128, Some((1050 , 1925)));
+    buddy_numbers_test(305047, 309143, None);
+}
+
+#[test]
+fn max_multiple_tests() {
+    assert_eq!(max_multiple(2,7),6);
+    assert_eq!(max_multiple(3,10),9);
+    assert_eq!(max_multiple(7,17),14);
+    assert_eq!(max_multiple(10,50),50);
+    assert_eq!(max_multiple(4,0), 0);
 }
