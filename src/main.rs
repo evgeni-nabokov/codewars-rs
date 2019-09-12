@@ -2,7 +2,7 @@ use std::cmp;
 use std::cmp::Ordering::*;
 use std::collections::{HashMap, HashSet};
 use std::iter;
-use regex::Regex;
+use regex::{Regex, Match};
 
 #[cfg(test)]
 mod tests;
@@ -858,4 +858,57 @@ fn sum_of_series(n: i32) -> f64 {
     // Truncating the sum.
     let formatted_sum = format!("{:.6}", sum);
     formatted_sum.parse().unwrap()
+}
+
+// https://www.codewars.com/kata/56baeae7022c16dd7400086e
+fn phone_directory(dir: &str, num: &str) -> String {
+    let phone_re = Regex::new(r"\d\d?-\d{3}-\d{3}-\d{4}").unwrap();
+    let mut matched_line: Option<(Match, &str)> = None;
+    for line in dir.lines() {
+        // Extracting phone number.
+        let phone_match = phone_re.captures(line).unwrap().get(0).unwrap();
+        let phone = phone_match.as_str();
+        if num.cmp(phone) != Equal {
+            continue;
+        }
+        if matched_line.is_none() {
+            matched_line = Some((phone_match, line));
+        } else {
+            return format!("Error => Too many people: {}", num);
+        }
+    }
+
+    if let Some((phone_match, line)) = matched_line {
+        // Extracting name.
+        let name_re = Regex::new(r"<.+?>").unwrap();
+        let name_cap = name_re.captures(line).unwrap().get(0).unwrap();
+        let name_len = name_cap.end() - name_cap.start();
+        let name = &name_cap.as_str()[1..name_len - 1];
+
+        // Extracting address.
+        let (first_cap, second_cap) = if phone_match.start() < name_cap.start() {
+            (phone_match, name_cap)
+        } else {
+            (name_cap, phone_match)
+        };
+        let mut address = format!("{}{}{}",
+                                  &line[0..first_cap.start()],
+                                  &line[first_cap.end()..second_cap.start()],
+                                  &line[second_cap.end()..line.len()]);
+
+        // Clearing address.
+        let garbage_re = Regex::new(r"[/!;*+$]").unwrap();
+        let multiple_commas = Regex::new(r"(?:\s*,\s*)+").unwrap();
+        let underscore_re = Regex::new(r"_").unwrap();
+        let multiple_spaces_re = Regex::new(r"\s+").unwrap();
+        address = garbage_re.replace_all(&address, "").into_owned();
+        address = multiple_commas.replace_all(&address, ", ").into_owned();
+        address = underscore_re.replace_all(&address, " ").into_owned();
+        address = multiple_spaces_re.replace_all(&address, " ").into_owned();
+        address = address.trim().to_string();
+
+        format!("Phone => {}, Name => {}, Address => {}", phone_match.as_str(), name, address)
+    }  else {
+        return format!("Error => Not found: {}", num);
+    }
 }
