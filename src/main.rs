@@ -912,3 +912,23 @@ fn phone_directory(dir: &str, num: &str) -> String {
         return format!("Error => Not found: {}", num);
     }
 }
+
+// https://www.codewars.com/kata/573182c405d14db0da00064e
+fn consec_kprimes(k: usize, arr: Vec<u64>) -> u64 {
+    let mut counter = 0;
+    let mut prev_is_kprime = false;
+    for n in arr.iter() {
+        let prime_factors = get_prime_factors(n);
+        if (k > 1 && prime_factors.len() == k) || (prime_factors.len() == 0) {
+            if prev_is_kprime {
+                counter += 1;
+            } else {
+                prev_is_kprime = true;
+            }
+        } else {
+            prev_is_kprime = false;
+        }
+    }
+    counter
+}
+

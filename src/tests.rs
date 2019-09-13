@@ -612,3 +612,17 @@ fn phone_directory_tests() {
     phone_directory_test(dir, "5-555-555-5555", "Error => Not found: 5-555-555-5555");
 
 }
+
+fn consec_kprimes_test(k: usize, arr: Vec<u64>, exp: u64) -> () {
+    assert_eq!(consec_kprimes(k, arr), exp)
+}
+
+#[test]
+fn consec_kprimes_tests() {
+    consec_kprimes_test(2, vec![10081, 10071, 10077, 10065, 10060, 10070, 10086, 10083, 10078, 10076, 10089, 10085, 10063, 10074, 10068, 10073, 10072, 10075], 2);
+    consec_kprimes_test(6, vec![10064], 0);
+    consec_kprimes_test(1, vec![10054, 10039, 10053, 10051, 10047, 10043, 10037, 10034], 0);
+    consec_kprimes_test(3, vec![10158, 10182, 10184, 10172, 10179, 10168, 10156, 10165, 10155, 10161, 10178, 10170], 5);
+    consec_kprimes_test(2, vec![10110, 10102, 10097, 10113, 10123, 10109, 10118, 10119, 10117, 10115, 10101, 10121, 10122], 7);
+    consec_kprimes_test(1, vec![10054, 10061, 10059, 10058, 10067, 10066, 10053, 10079, 10069, 10082], 1);
+}
