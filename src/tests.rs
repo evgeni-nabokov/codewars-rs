@@ -670,3 +670,16 @@ fn rgb_tests() {
     assert_eq!(rgb(254, 253, 252), "FEFDFC");
     assert_eq!(rgb(-20, 275, 125), "00FF7D");
 }
+
+
+fn perimeter_test(n: u64, exp: u64) -> () {
+    assert_eq!(perimeter(n), exp)
+}
+
+#[test]
+fn perimeter_tests() {
+    perimeter_test(5, 80);
+    perimeter_test(7, 216);
+    perimeter_test(20, 114624);
+    perimeter_test(30, 14098308);
+}

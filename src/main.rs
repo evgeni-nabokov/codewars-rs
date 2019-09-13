@@ -1082,3 +1082,17 @@ fn rgb(r: i32, g: i32, b: i32) -> String {
 fn convert_to_byte(c: i32) -> u8 {
     if c < 0 { 0 } else { if c > 255 { 255 } else { c as u8 } }
 }
+
+// https://www.codewars.com/kata/559a28007caad2ac4e000083
+fn perimeter(n: u64) -> u64 {
+    let mut f0 = 0;
+    let mut f1 = 1;
+    let mut sum = f0 + f1;
+    for _ in 2..=(n + 1) {
+        let tmp = f1;
+        f1 += f0;
+        f0 = tmp;
+        sum += f1;
+    }
+    4 * sum
+}
