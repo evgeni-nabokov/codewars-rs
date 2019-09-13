@@ -659,5 +659,14 @@ fn prime_factors_tests() {
     prime_factors_test(7775460, "(2**2)(3**3)(5)(7)(11**2)(17)");
     prime_factors_test(17*17*93*677, "(3)(17**2)(31)(677)");
     prime_factors_test(7919, "(7919)");
-    //testing(933555431, "(7537)(123863)");
+    prime_factors_test(933555431, "(7537)(123863)");
+}
+
+#[test]
+fn rgb_tests() {
+    assert_eq!(rgb(0, 0, 0), "000000");
+    assert_eq!(rgb(1, 2, 3), "010203");
+    assert_eq!(rgb(255, 255, 255), "FFFFFF");
+    assert_eq!(rgb(254, 253, 252), "FEFDFC");
+    assert_eq!(rgb(-20, 275, 125), "00FF7D");
 }

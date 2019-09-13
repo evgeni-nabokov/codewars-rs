@@ -1070,3 +1070,15 @@ fn prime_factors(n: u64) -> String {
     }
     res.join("")
 }
+
+// https://www.codewars.com/kata/513e08acc600c94f01000001
+fn rgb(r: i32, g: i32, b: i32) -> String {
+    format!("{:02X}{:02X}{:02X}",
+            convert_to_byte(r),
+            convert_to_byte(g),
+            convert_to_byte(b))
+}
+
+fn convert_to_byte(c: i32) -> u8 {
+    if c < 0 { 0 } else { if c > 255 { 255 } else { c as u8 } }
+}
