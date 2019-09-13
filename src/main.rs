@@ -932,3 +932,39 @@ fn consec_kprimes(k: usize, arr: Vec<u64>) -> u64 {
     counter
 }
 
+// https://www.codewars.com/kata/5a045fee46d843effa000070
+fn factorial_decomp(n: u64) -> String {
+    // A trivial corner case.
+    if n == 1 {
+        return "1".to_string();
+    }
+    let mut all_prime_factors: Vec<u64> = Vec::new();
+    for i in 2..=n {
+        let prime_factors = get_prime_factors(&i);
+        if prime_factors.len() == 0 {
+            all_prime_factors.push(i);
+        } else {
+            all_prime_factors.extend_from_slice(&prime_factors);
+        }
+    }
+    all_prime_factors.sort_unstable();
+    all_prime_factors.push(0);  // A stub for one more iteration.
+    let mut prev_factor = all_prime_factors[0];
+    let mut exp = 1u64;
+    let mut res: Vec<String> = Vec::new();
+    for &factor in all_prime_factors.iter().skip(1) {
+        if factor == prev_factor {
+            exp += 1;
+        } else {
+            if exp == 1 {
+                res.push(format!("{}", prev_factor));
+            } else {
+                res.push(format!("{}^{}", prev_factor, exp));
+            }
+            prev_factor = factor;
+            exp = 1;
+        }
+    }
+    res.join(" * ")
+}
+

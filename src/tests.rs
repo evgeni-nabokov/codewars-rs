@@ -626,3 +626,23 @@ fn consec_kprimes_tests() {
     consec_kprimes_test(2, vec![10110, 10102, 10097, 10113, 10123, 10109, 10118, 10119, 10117, 10115, 10101, 10121, 10122], 7);
     consec_kprimes_test(1, vec![10054, 10061, 10059, 10058, 10067, 10066, 10053, 10079, 10069, 10082], 1);
 }
+
+fn factorial_decomp_test(n: u64, exp: &str) -> () {
+    println!("n:{:?}", n);
+    let ans = factorial_decomp(n);
+    println!("actual: {:?}", ans);
+    println!("expect: {:?}", exp.to_string());
+    println!("{}", ans == exp.to_string());
+    assert_eq!(ans, exp.to_string());
+    println!("{}", "-");
+}
+
+#[test]
+fn factorial_decomp_tests() {
+    factorial_decomp_test(17, "2^15 * 3^6 * 5^3 * 7^2 * 11 * 13 * 17");
+    factorial_decomp_test(5, "2^3 * 3 * 5");
+    factorial_decomp_test(22, "2^19 * 3^9 * 5^4 * 7^3 * 11^2 * 13 * 17 * 19");
+    factorial_decomp_test(14, "2^11 * 3^5 * 5^2 * 7^2 * 11 * 13");
+    factorial_decomp_test(25, "2^22 * 3^10 * 5^6 * 7^3 * 11^2 * 13 * 17 * 19 * 23");
+    factorial_decomp_test(1, "1");
+}
