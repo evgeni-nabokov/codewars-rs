@@ -178,8 +178,10 @@ fn mix_tests() {
 
 #[test]
 fn get_prime_factors_tests() -> () {
+    assert_eq!(get_prime_factors(&11), vec![]);
     assert_eq!(get_prime_factors(&10), vec![2, 5]);
     assert_eq!(get_prime_factors(&12), vec![2, 2, 3]);
+    assert_eq!(get_prime_factors(&7775460), vec![2, 2, 3, 3, 3, 5, 7, 11, 11, 17]);
 }
 
 fn get_kprimes_test(k: usize, start: u64, nd: u64, exp: Vec<u64>) -> () {
@@ -645,4 +647,17 @@ fn factorial_decomp_tests() {
     factorial_decomp_test(14, "2^11 * 3^5 * 5^2 * 7^2 * 11 * 13");
     factorial_decomp_test(25, "2^22 * 3^10 * 5^6 * 7^3 * 11^2 * 13 * 17 * 19 * 23");
     factorial_decomp_test(1, "1");
+}
+
+
+fn prime_factors_test(n: u64, exp: &str) -> () {
+    assert_eq!(&prime_factors(n), exp)
+}
+
+#[test]
+fn prime_factors_tests() {
+    prime_factors_test(7775460, "(2**2)(3**3)(5)(7)(11**2)(17)");
+    prime_factors_test(17*17*93*677, "(3)(17**2)(31)(677)");
+    prime_factors_test(7919, "(7919)");
+    //testing(933555431, "(7537)(123863)");
 }
