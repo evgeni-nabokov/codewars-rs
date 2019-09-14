@@ -1096,3 +1096,29 @@ fn perimeter(n: u64) -> u64 {
     }
     4 * sum
 }
+
+// https://www.codewars.com/kata/57591ef494aba64d14000526
+fn john_ann(n: i32) -> (Vec<i32>, Vec<i32>) {
+    let mut john_vec = vec![0];
+    let mut ann_vec = vec![1];
+    for day in 1..n {
+        john_vec.push(day - ann_vec[john_vec[day as usize - 1] as usize]);
+        ann_vec.push(day - john_vec[ann_vec[day as usize - 1] as usize]);
+    }
+    (john_vec, ann_vec)
+}
+
+fn john(n: i32) -> Vec<i32> {
+    john_ann(n).0
+}
+fn ann(n: i32) -> Vec<i32> {
+    john_ann(n).1
+}
+
+fn sum_john(n: i32) -> i32 {
+    john(n).iter().sum()
+}
+
+fn sum_ann(n: i32) -> i32 {
+    ann(n).iter().sum()
+}

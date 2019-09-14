@@ -683,3 +683,37 @@ fn perimeter_tests() {
     perimeter_test(20, 114624);
     perimeter_test(30, 14098308);
 }
+
+fn john_test(n: i32, exp: Vec<i32>) -> () {
+    assert_eq!(john(n), exp)
+}
+fn ann_test(n: i32, exp: Vec<i32>) -> () {
+    assert_eq!(ann(n), exp)
+}
+fn sum_john_test(n: i32, exp: i32) -> () {
+    assert_eq!(sum_john(n), exp)
+}
+fn sum_ann_test(n: i32, exp: i32) -> () {
+    assert_eq!(sum_ann(n), exp)
+}
+
+#[test]
+fn john_tests() {
+    john_test(11, vec![0, 0, 1, 2, 2, 3, 4, 4, 5, 6, 6]);
+    john_test(14, vec![0, 0, 1, 2, 2, 3, 4, 4, 5, 6, 6, 7, 7, 8]);
+}
+#[test]
+fn ann_tests() {
+    ann_test(6, vec![1, 1, 2, 2, 3, 3]);
+    ann_test(15, vec![1, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6, 7, 8, 8, 9]);
+}
+#[test]
+fn sum_john_tests() {
+    sum_john_test(75, 1720);
+    sum_john_test(78, 1861);
+}
+#[test]
+fn sum_ann_tests() {
+    sum_ann_test(115, 4070);
+    sum_ann_test(150, 6930);
+}
