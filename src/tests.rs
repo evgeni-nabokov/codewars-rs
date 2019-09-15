@@ -730,3 +730,15 @@ fn dbl_linear_tests() {
     dbl_linear_test(50, 175);
     dbl_linear_test(100, 447);
 }
+
+#[test]
+fn n_linear_pair_tests() {
+    assert_eq!(n_linear(&[2, 3], 10), 22);
+    assert_eq!(n_linear(&[3, 2], 10), 22);
+}
+
+#[test]
+fn n_linear_triplet_tests() {
+    assert_eq!(n_linear(&[5, 7, 8], 10), 64);
+    assert_eq!(n_linear(&[5, 7, 8], 11), 65);
+}

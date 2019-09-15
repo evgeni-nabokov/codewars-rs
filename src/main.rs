@@ -1154,3 +1154,24 @@ fn dbl_linear(n: u32) -> u32 {
     }
     *series.last().unwrap()
 }
+
+// https://www.codewars.com/kata/5aa417aa4a6b344e2200009d
+fn n_linear(m: &[u32], n: usize) -> u32 {
+    let mut series: Vec<u32> = Vec::with_capacity(n as usize + 1);
+    series.push(1);
+    let mut indices: Vec<usize> = vec![0; m.len()];
+    let mut cur_x: Vec<u32> = m.iter().map(|&x| x + 1).collect::<Vec<_>>();
+    while series.len() < series.capacity() {
+        let min_x = cur_x.iter().min().unwrap().to_owned();
+        let min_x_indices = cur_x.iter().enumerate()
+                    .filter(|i_x| *i_x.1 == min_x)
+                    .map(|i_x| i_x.0)
+                    .collect::<Vec<_>>();
+        series.push(min_x);
+        for i in min_x_indices.into_iter() {
+            indices[i] += 1;
+            cur_x[i] = m[i] * series[indices[i]] + 1;
+        }
+    }
+    *series.last().unwrap()
+}
