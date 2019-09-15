@@ -1098,27 +1098,59 @@ fn perimeter(n: u64) -> u64 {
 }
 
 // https://www.codewars.com/kata/57591ef494aba64d14000526
-fn john_ann(n: i32) -> (Vec<i32>, Vec<i32>) {
-    let mut john_vec = vec![0];
-    let mut ann_vec = vec![1];
-    for day in 1..n {
-        john_vec.push(day - ann_vec[john_vec[day as usize - 1] as usize]);
-        ann_vec.push(day - john_vec[ann_vec[day as usize - 1] as usize]);
+fn john_ann(n: &u32) -> (Vec<u32>, Vec<u32>) {
+    let mut john_series = vec![0];
+    let mut ann_series = vec![1];
+    for day in 1..*n {
+        john_series.push(day - ann_series[john_series[day as usize - 1] as usize]);
+        ann_series.push(day - john_series[ann_series[day as usize - 1] as usize]);
     }
-    (john_vec, ann_vec)
+    (john_series, ann_series)
 }
 
-fn john(n: i32) -> Vec<i32> {
-    john_ann(n).0
+fn john(n: u32) -> Vec<u32> {
+    john_ann(&n).0
 }
-fn ann(n: i32) -> Vec<i32> {
-    john_ann(n).1
+fn ann(n: u32) -> Vec<u32> {
+    john_ann(&n).1
 }
 
-fn sum_john(n: i32) -> i32 {
+fn sum_john(n: u32) -> u32 {
     john(n).iter().sum()
 }
 
-fn sum_ann(n: i32) -> i32 {
+fn sum_ann(n: u32) -> u32 {
     ann(n).iter().sum()
+}
+
+// https://www.codewars.com/kata/5672682212c8ecf83e000050
+fn dbl_linear(n: u32) -> u32 {
+    let mut series: Vec<u32> = Vec::with_capacity(n as usize + 1);
+    series.push(1);
+    let mut x_index = 0;
+    let mut y_index = 0;
+    let mut cur_x = 3;
+    let mut cur_y = 4;
+    while series.len() < series.capacity() {
+        match  cur_x.cmp(&cur_y) {
+            Greater => {
+                series.push(cur_y);
+                y_index += 1;
+                cur_y = 3 * series[y_index] + 1;
+            },
+            Less => {
+                series.push(cur_x);
+                x_index += 1;
+                cur_x = 2 * series[x_index] + 1;
+            },
+            Equal => {
+                series.push(cur_x);
+                x_index += 1;
+                cur_x = 2 * series[x_index] + 1;
+                y_index += 1;
+                cur_y = 3 * series[y_index] + 1;
+            }
+        }
+    }
+    *series.last().unwrap()
 }
