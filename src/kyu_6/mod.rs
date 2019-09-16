@@ -155,3 +155,9 @@ fn calc_worth_sum(races_worth: &[u32], army: &str) -> u32 {
     }
     sum
 }
+
+// https://www.codewars.com/kata/58184387d14fc32f2b0012b2
+fn fp_approx(x: f64) -> f64 {
+    // First 4 members of the Maclaurin series of the function sqrt(1 + x) - 1.
+    x / 2.0 * (1.0 - x / 4.0 + x * x / 8.0)
+}
