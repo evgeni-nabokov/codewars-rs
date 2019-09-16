@@ -28,7 +28,7 @@ fn product_fib_tests() {
 
 #[test]
 fn get_prime_factors_tests() -> () {
-    assert_eq!(get_prime_factors(&11), vec![]);
+    assert_eq!(get_prime_factors(&11), vec![11]);
     assert_eq!(get_prime_factors(&10), vec![2, 5]);
     assert_eq!(get_prime_factors(&12), vec![2, 2, 3]);
     assert_eq!(get_prime_factors(&7775460), vec![2, 2, 3, 3, 3, 5, 7, 11, 11, 17]);

@@ -86,24 +86,23 @@ fn product_fib(prod: u64) -> (u64, u64, bool) {
 fn get_prime_factors(n: &u64) -> Vec<u64> {
     let mut res: Vec<u64> = Vec::new();
     // Fast lookup.
-    if PRIME_NUMBERS.binary_search(n).is_ok() { return res; }
+    if PRIME_NUMBERS.binary_search(n).is_ok() {
+        res.push(*n);
+        return res;
+    }
     let mut cur_factor = n.to_owned();
     let mut cur_pn = *PRIME_NUMBERS.first().unwrap();
     let last_pn = *PRIME_NUMBERS.last().unwrap();
     let mut pn_index = 0;
-
     loop {
         if cur_factor % cur_pn != 0 {
             if cur_pn == last_pn {
-                println!("n={}, cur_pn={}, last_pn={}", n, cur_pn, last_pn);
                 panic!("Reached the PRIME_NUMBERS' limit.");
             }
             pn_index += 1;
             cur_pn = PRIME_NUMBERS[pn_index];
             if cur_pn * cur_pn > cur_factor {
-                if cur_factor != *n {
-                    res.push(cur_factor);
-                }
+                res.push(cur_factor);
                 break;
             }
             continue;
@@ -200,7 +199,7 @@ fn buddy_numbers(start: u64, limit: u64) -> Option<(u64, u64)> {
 // Calculates sum of factors of a number using prime factorization.
 fn get_sum_of_factors(n: &u64) -> u64 {
     let mut prime_factors: Vec<u64> = get_prime_factors(&n);
-    if prime_factors.is_empty() {
+    if prime_factors.len() == 1 {
         return 1;
     }
     prime_factors.push(0); // A stub for one more iteration.
@@ -320,7 +319,7 @@ fn consec_kprimes(k: usize, arr: Vec<u64>) -> u64 {
     let mut prev_is_kprime = false;
     for n in arr.iter() {
         let prime_factors = get_prime_factors(n);
-        if (k > 1 && prime_factors.len() == k) || (prime_factors.len() == 0) {
+        if prime_factors.len() == k {
             if prev_is_kprime {
                 counter += 1;
             } else {
@@ -341,12 +340,7 @@ fn factorial_decomp(n: u64) -> String {
     }
     let mut all_prime_factors: Vec<u64> = Vec::new();
     for i in 2..=n {
-        let prime_factors = get_prime_factors(&i);
-        if prime_factors.len() == 0 {
-            all_prime_factors.push(i);
-        } else {
-            all_prime_factors.extend_from_slice(&prime_factors);
-        }
+        all_prime_factors.extend_from_slice(&get_prime_factors(&i));
     }
     all_prime_factors.sort_unstable();
     all_prime_factors.push(0);  // A stub for one more iteration.
@@ -377,7 +371,7 @@ fn prime_factors(n: u64) -> String {
     }
     let mut prime_factors = get_prime_factors(&n);
     // n is a prime number.
-    if prime_factors.len() == 0 {
+    if prime_factors.len() == 1 {
         return format!("({})", n);
     }
     prime_factors.push(0);  // A stub for one more iteration.
@@ -427,19 +421,10 @@ fn perimeter(n: u64) -> u64 {
 }
 
 // https://www.codewars.com/kata/57591ef494aba64d14000526
-fn john_ann(n: &u32) -> (Vec<u32>, Vec<u32>) {
-    let mut john_series = vec![0];
-    let mut ann_series = vec![1];
-    for day in 1..*n {
-        john_series.push(day - ann_series[john_series[day as usize - 1] as usize]);
-        ann_series.push(day - john_series[ann_series[day as usize - 1] as usize]);
-    }
-    (john_series, ann_series)
-}
-
 fn john(n: u32) -> Vec<u32> {
     john_ann(&n).0
 }
+
 fn ann(n: u32) -> Vec<u32> {
     john_ann(&n).1
 }
@@ -450,4 +435,14 @@ fn sum_john(n: u32) -> u32 {
 
 fn sum_ann(n: u32) -> u32 {
     ann(n).iter().sum()
+}
+
+fn john_ann(n: &u32) -> (Vec<u32>, Vec<u32>) {
+    let mut john_series = vec![0];
+    let mut ann_series = vec![1];
+    for day in 1..*n {
+        john_series.push(day - ann_series[john_series[day as usize - 1] as usize]);
+        ann_series.push(day - john_series[ann_series[day as usize - 1] as usize]);
+    }
+    (john_series, ann_series)
 }
