@@ -270,3 +270,18 @@ fn sum_ann_tests() {
     assert_eq!(sum_ann(115), 4070);
     assert_eq!(sum_ann(150), 6930);
 }
+
+#[test]
+fn get_prime_factors_with_power_tests() {
+    assert_eq!(get_prime_factors_with_power(&11), hashmap!{ 11 => 1 });
+    assert_eq!(get_prime_factors_with_power(&10), hashmap!{ 2 => 1, 5 => 1 });
+    assert_eq!(get_prime_factors_with_power(&24), hashmap!{ 2 => 3, 3 => 1 });
+    assert_eq!(get_prime_factors_with_power(&7775460), hashmap!{ 2 => 2, 3 => 3, 5 => 1, 7 => 1, 11 => 2, 17 => 1 });
+}
+
+#[test]
+fn test_add() {
+    assert_eq!(convert_fracts(vec![(1, 2), (1, 3), (1, 4)]), vec![(6, 12), (4, 12), (3, 12)]);
+    assert_eq!(convert_fracts(vec![(69, 130), (87, 1310), (3, 4)]), vec![(18078, 34060), (2262, 34060), (25545, 34060)]);
+    assert_eq!(convert_fracts(vec![(690, 1300), (87, 1310), (30, 40)]), vec![(18078, 34060), (2262, 34060), (25545, 34060)]);
+}

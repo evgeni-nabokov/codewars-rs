@@ -446,3 +446,57 @@ fn john_ann(n: &u32) -> (Vec<u32>, Vec<u32>) {
     }
     (john_series, ann_series)
 }
+
+// https://www.codewars.com/kata/54d7660d2daf68c619000d95
+fn convert_fracts(mut list: Vec<(u64, u64)>) -> Vec<(u64, u64)> {
+    let mut all_prime_factors: HashMap<u64, u32> = HashMap::new();
+    for (n1, n2) in list.iter_mut() {
+        let mut n1_prime_factors = get_prime_factors_with_power(n1);
+        let mut n2_prime_factors = get_prime_factors_with_power(n2);
+        for (pf, n2_pwr) in n2_prime_factors.iter_mut() {
+            // Reducing a fraction.
+            if let Some(n1_pwr) = n1_prime_factors.get_mut(pf) {
+                if *n2_pwr > *n1_pwr {
+                    *n2_pwr -= *n1_pwr;
+                    *n1_pwr = 0;
+                } else {
+                    *n1_pwr -= *n2_pwr;
+                    *n2_pwr = 0;
+                }
+            }
+            // Updating an existing prime factor or inserting the new.
+            if let Some(all_pwr) = all_prime_factors.get_mut(pf) {
+                if *all_pwr < *n2_pwr {
+                    *all_pwr = *n2_pwr;
+                }
+            } else if *n2_pwr > 0 {
+                all_prime_factors.insert(pf.to_owned(), n2_pwr.to_owned());
+            }
+        }
+    }
+    let lcm = all_prime_factors.iter().fold(1u64, |acc, (&pf, &pwr)| acc * pf.pow(pwr));
+    list.iter().map(|(n1, n2)| (*n1 * lcm / * n2, lcm)).collect::<Vec<_>>()
+}
+
+fn get_prime_factors_with_power(n: &u64) -> HashMap<u64, u32> {
+    let mut res = HashMap::new();
+    let mut prime_factors = get_prime_factors(n);
+    println!("n={}, prime_factors_vec={:?}", n, prime_factors);
+    if prime_factors.len() == 1 {
+        res.insert(*n, 1);
+        return res;
+    }
+    prime_factors.push(0); // A stub for one more iteration.
+    let mut pwr = 0;
+    let mut prev_factor = prime_factors[0];
+    for &factor in prime_factors.iter() {
+        if prev_factor == factor {
+            pwr += 1;
+        } else {
+            res.insert(prev_factor, pwr);
+            pwr = 1;
+        }
+        prev_factor = factor;
+    }
+    res
+}

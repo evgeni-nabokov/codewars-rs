@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate maplit;
+
 mod common;
 mod kyu_3;
 mod kyu_4;
