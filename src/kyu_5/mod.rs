@@ -500,3 +500,15 @@ fn get_prime_factors_with_power(n: &u64) -> HashMap<u64, u32> {
     }
     res
 }
+
+// https://www.codewars.com/kata/55c6126177c9441a570000cc
+pub fn order_weight(s: &str) -> String {
+    let mut weights = s.split_ascii_whitespace()
+        .map(|x| (x.chars().map(|c| c.to_digit(10).unwrap()).sum(), x.to_string()))
+        .collect::<Vec<(u32, String)>>();
+    weights.sort_unstable_by(|x, y| match x.0.cmp(&y.0) {
+        Equal => x.1.cmp(&y.1),
+        z => z
+    });
+    weights.iter().map(|x| x.1.clone()).collect::<Vec<_>>().join(" ")
+}
