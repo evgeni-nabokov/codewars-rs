@@ -502,7 +502,7 @@ fn get_prime_factors_with_power(n: &u64) -> HashMap<u64, u32> {
 }
 
 // https://www.codewars.com/kata/55c6126177c9441a570000cc
-pub fn order_weight(s: &str) -> String {
+fn order_weight(s: &str) -> String {
     let mut weights = s.split_ascii_whitespace()
         .map(|x| (x.chars().map(|c| c.to_digit(10).unwrap()).sum(), x.to_string()))
         .collect::<Vec<(u32, String)>>();
@@ -511,4 +511,103 @@ pub fn order_weight(s: &str) -> String {
         z => z
     });
     weights.iter().map(|x| x.1.clone()).collect::<Vec<_>>().join(" ")
+}
+
+// https://www.codewars.com/kata/58ee4962dc4f81d6f400001c
+#[derive(Copy, Clone, Debug)]
+struct Vector {
+    pub i: f64,
+    pub j: f64,
+    pub k: f64
+}
+
+impl Vector {
+    const EPS: f64 = 0.001;
+
+    pub fn get_i() -> Vector {
+        Vector::new(1.0, 0.0, 0.0)
+    }
+
+    pub fn get_j() -> Vector {
+        Vector::new(0.0, 1.0, 0.0)
+    }
+
+    pub fn get_k() -> Vector {
+        Vector::new(0.0, 0.0, 1.0)
+    }
+
+    pub fn new(i: f64, j: f64, k: f64) -> Vector {
+        Vector { i, j, k }
+    }
+
+    pub fn get_magnitude(&self) -> f64 {
+        (self.i.powf(2.0) + self.j.powf(2.0) + self.k.powf(2.0)).sqrt()
+    }
+
+    pub fn add(&self, another: Vector) -> Vector {
+        Vector::new(self.i + another.i, self.j + another.j, self.k + another.k)
+    }
+
+    pub fn multiply_by_scalar(&self, multiplier: f64) -> Vector {
+        Vector::new(self.i * multiplier, self.j * multiplier, self.k * multiplier)
+    }
+
+    pub fn dot(&self, another: Vector) -> f64 {
+        self.i * another.i + self.j * another.j + self.k * another.k
+    }
+
+    pub fn cross(&self, another: Vector) -> Vector {
+        Vector::new(
+            self.j * another.k - self.k * another.j,
+            self.k * another.i - self.i * another.k,
+            self.i * another.j - self.j * another.i
+        )
+    }
+
+    pub fn is_parallel_to(&self, another: Vector) -> bool {
+        if self.is_zero() || another.is_zero() {
+            return false;
+        }
+
+        let s = [self.i.abs(), self.j.abs(), self.k.abs()];
+        let a = [another.i.abs(), another.j.abs(), another.k.abs()];
+        let mut l: Vec<f64> = Vec::with_capacity(3);
+        for (&x1, &x2) in s.iter().zip(a.iter()) {
+            if (x1 < Vector::EPS && x2 > Vector::EPS) || (x1 > Vector::EPS && x2 < Vector::EPS) {
+                return false;
+            }
+            if x2 < Vector::EPS {
+                continue;
+            }
+            l.push(x1 / x2);
+        }
+        if l.len() == 1 {
+            return true;
+        }
+        l.windows(2).all(|w| (w[0] - w[1]).abs() < Vector::EPS)
+    }
+
+    pub fn is_perpendicular_to(&self, another: Vector) -> bool {
+        if self.is_zero() || another.is_zero() {
+            return false;
+        }
+        self.dot(another).abs() < Vector::EPS
+    }
+
+    pub fn normalize(&self) -> Vector {
+        let m = self.get_magnitude();
+        Vector::new(self.i / m, self.j / m, self.k / m)
+    }
+
+    pub fn is_normalized(&self) -> bool {
+        self.get_magnitude() - 1.0 < Vector::EPS
+    }
+
+    fn is_equal(&self, another: Vector) -> bool {
+        self.add(another.multiply_by_scalar(-1.0)).is_zero()
+    }
+
+    fn is_zero(&self) -> bool {
+        self.i.abs() < Vector::EPS.abs() && self.j.abs() < Vector::EPS && self.k.abs() < Vector::EPS
+    }
 }
