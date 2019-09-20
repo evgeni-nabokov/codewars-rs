@@ -420,3 +420,15 @@ mod vector_tests {
         assert!(!b.is_normalized());
     }
 }
+
+#[test]
+fn basics_dec2_fact_string() {
+    assert_eq!(dec2_fact_string(2982), "4041000");
+    assert_eq!(dec2_fact_string(463), "341010");
+}
+
+#[test]
+fn basics_fact_string_2dec() {
+    assert_eq!(fact_string_2dec("4041000".to_string()), 2982);
+    assert_eq!(fact_string_2dec("341010".to_string()), 463);
+}
