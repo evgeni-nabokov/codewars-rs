@@ -689,3 +689,25 @@ fn match_and_substitute(s: &str, prog: &str, ver: &str) -> String {
     };
     p_info.to_string()
 }
+
+// https://www.codewars.com/kata/550f22f4d758534c1100025a
+#[derive(Copy, Clone, Debug, PartialEq)]
+enum Direction {
+    NORTH, SOUTH, EAST, WEST
+}
+
+fn dir_reduction(arr: &[Direction]) -> Vec<Direction> {
+    use Direction::*;
+    let mut res: Vec<Direction> = Vec::new();
+    for &d in arr.iter() {
+        if res.is_empty() {
+            res.push(d);
+            continue;
+        }
+        match (d, res.last().unwrap()) {
+            (NORTH, SOUTH) | (SOUTH, NORTH) | (EAST, WEST) | (WEST, EAST) => { res.pop(); },
+            _ => { res.push(d); }
+        }
+    }
+    res
+}

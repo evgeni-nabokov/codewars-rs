@@ -454,3 +454,11 @@ fn match_and_substitute_tests() {
     let s13="Program title: Primes\nAuthor: Kern\nCorporation: Gold\nPhone: +1-503-555-0090\nDate: Tues April 9, 2005\nVersion: 67\nLevel: Alpha";
     match_and_substitute_test(s13, "Ladder", "1.1", "ERROR: VERSION or PHONE");
 }
+
+#[test]
+fn dir_reduction_tests() {
+    use Direction::*;
+    assert_eq!(dir_reduction(&[NORTH, SOUTH, SOUTH, EAST, WEST, NORTH, WEST]), vec![WEST]);
+    assert_eq!(dir_reduction(&[NORTH, WEST, SOUTH, EAST]), vec![NORTH, WEST, SOUTH, EAST]);
+    assert_eq!(dir_reduction(&[EAST, EAST, WEST, NORTH, WEST, EAST, EAST, SOUTH, NORTH, WEST]), vec![EAST, NORTH]);
+}
