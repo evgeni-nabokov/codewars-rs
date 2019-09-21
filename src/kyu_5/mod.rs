@@ -1,5 +1,6 @@
 use std::cmp::Ordering::*;
 use std::collections::{HashMap, HashSet};
+use std::char::from_digit;
 use regex::{Regex, Match};
 use super::common::*;
 
@@ -612,53 +613,29 @@ impl Vector {
 }
 
 // https://www.codewars.com/kata/54e320dcebe1e583250008fd
-fn dec2_fact_string(n: u64) -> String {
-    let num36: HashMap<u64, char> = [
-        (0, '0'), (1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5'), (6, '6'), (7, '7'), (8, '8'), (9, '9'),
-        (10, 'A'), (11, 'B'), (12, 'C'), (13, 'D'), (14, 'D'), (15, 'F'), (16, 'G'), (17, 'H'), (18, 'I'),
-        (19, 'J'), (20, 'K'), (21, 'L'), (22, 'M'), (23, 'N'), (24, 'O'), (25, 'P'), (26, 'Q'), (27, 'R'),
-        (28, 'S'), (29, 'T'), (30, 'U'), (31, 'V'), (32, 'W'), (33, 'X'), (34, 'Y'), (35, 'Z')
-    ].iter().cloned().collect();
-
-    let mut k = 0u64;
-    let mut f = 1u64;
-    let mut rem = n;
-    let mut res: Vec<String> = Vec::new();
-    loop {
-        k += 1;
-        if f * k > n {
-            break;
-        }
-        f *= k;
+pub fn dec2_fact_string(mut n: u64) -> String {
+    let mut digits = Vec::new();
+    let mut radix = 1;
+    while n != 0 {
+        digits.push(n % radix);
+        n /= radix;
+        radix += 1;
     }
-    for i in (1..k).rev() {
-        if f > rem {
-            res.push("0".to_string());
-        } else {
-            let d = rem / f;
-            res.push(format!("{}", num36.get(&d).unwrap()));
-        }
-        rem = rem % f;
-        f /= i;
-    }
-    res.push("0".to_string());
-    res.join("")
+    digits
+        .into_iter()
+        .rev()
+        .map(|d| from_digit(d as u32, 36).unwrap().to_ascii_uppercase())
+        .collect()
 }
 
 fn fact_string_2dec(s: String) -> u64 {
-    let num36: HashMap<char, u64> = [
-        ('0', 0), ('1', 1), ('2', 2), ('3', 3), ('4', 4), ('5', 5), ('6', 6), ('7', 7), ('8', 8), ('9', 9),
-        ('A', 10), ('B', 11), ('C', 12), ('D', 13), ('E', 14), ('F', 15), ('G', 16), ('H', 17), ('I', 18),
-        ('J', 19), ('K', 20), ('L', 21), ('M', 22), ('N', 23), ('O', 24), ('P', 25), ('Q', 26), ('R', 27),
-        ('S', 28), ('T', 29), ('U', 30), ('V', 31), ('W', 32), ('X', 33), ('Y', 34), ('Z', 35)
-    ].iter().cloned().collect();
-    let mut k = 0u64;
-    let mut f = 1u64;
+    let mut radix = 1u64;
+    let mut base = 1u64;
     let mut res = 0u64;
-    for ch in s.chars().rev() {
-        res += f * num36.get(&ch).unwrap().to_owned();
-        k += 1;
-        f *= k;
+    for ch in s.chars().rev().skip(1) {
+        base *= radix;
+        res += base * ch.to_digit(36).unwrap() as u64;;
+        radix += 1;
     }
     res
 }
