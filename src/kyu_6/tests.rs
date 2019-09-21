@@ -107,3 +107,9 @@ fn fp_approx_tests() {
     assert_fuzzy_equals(fp_approx(2.6e-08), 1.29999999155e-08);
     assert_fuzzy_equals(fp_approx(1.4e-09), 6.999999997549999e-10);
 }
+
+#[test]
+fn decode_morse_test() {
+    let decoder = MorseDecoder::new();
+    assert_eq!(decoder.decode_morse(".... . -.--   .--- ..- -.. ."), "HEY JUDE");
+}
