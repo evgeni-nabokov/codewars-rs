@@ -1,6 +1,7 @@
 use std::cmp::Ordering::*;
 use std::collections::{HashMap, HashSet};
 use std::char::from_digit;
+use std::fmt;
 use regex::{Regex, Match};
 use super::common::*;
 
@@ -638,4 +639,53 @@ fn fact_string_2dec(s: String) -> u64 {
         radix += 1;
     }
     res
+}
+
+// https://www.codewars.com/kata/59de1e2fe50813a046000124
+struct ProgramInfo {
+    pub program: String,
+    pub author: String,
+    pub phone: String,
+    pub date: String,
+    pub version: String
+}
+
+impl fmt::Display for ProgramInfo {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.write_str("Program: ").ok();
+        fmt.write_str(self.program.as_str()).ok();
+        fmt.write_str(" Author: ").ok();
+        fmt.write_str(self.author.as_str()).ok();
+        fmt.write_str(" Phone: ").ok();
+        fmt.write_str(self.phone.as_str()).ok();
+        fmt.write_str(" Date: ").ok();
+        fmt.write_str(self.date.as_str()).ok();
+        fmt.write_str(" Version: ").ok();
+        fmt.write_str(self.version.as_str()).ok();
+        Ok(())
+    }
+}
+
+fn match_and_substitute(s: &str, prog: &str, ver: &str) -> String {
+    let error_message = "ERROR: VERSION or PHONE".to_string();
+    let lines = s.lines().collect::<Vec<&str>>();
+    let phone = lines[3].split_ascii_whitespace().collect::<Vec<&str>>().last().unwrap().to_owned();
+    let phone_re = Regex::new(r"\+1-\d{3}-\d{3}-\d{4}").unwrap();
+    if !phone_re.is_match(phone) {
+        return error_message
+    }
+    let version = lines[5].split_ascii_whitespace().collect::<Vec<&str>>().last().unwrap().to_owned();
+    let version_re = Regex::new(r"^\d+\.\d+$").unwrap();
+    if !version_re.is_match(version) {
+        return error_message;
+    }
+
+    let p_info = ProgramInfo {
+        program: prog.to_string(),
+        author: "g964".to_string(),
+        date: "2019-01-01".to_string(),
+        version: (if version == "2.0" { version } else { ver }).to_string(),
+        phone: "+1-503-555-0090".to_string()
+    };
+    p_info.to_string()
 }

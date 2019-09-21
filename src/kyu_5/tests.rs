@@ -422,13 +422,35 @@ mod vector_tests {
 }
 
 #[test]
-fn basics_dec2_fact_string() {
+fn dec2_fact_string_tests() {
     assert_eq!(dec2_fact_string(2982), "4041000");
     assert_eq!(dec2_fact_string(463), "341010");
 }
 
 #[test]
-fn basics_fact_string_2dec() {
+fn fact_string_2dec_tests() {
     assert_eq!(fact_string_2dec("4041000".to_string()), 2982);
     assert_eq!(fact_string_2dec("341010".to_string()), 463);
+}
+
+fn match_and_substitute_test(s: &str, prog: &str, version: &str, exp: &str) -> () {
+    println!("s:{:?}", s);
+    println!("prog:{:?}", prog);
+    println!("version:{:?}", version);
+    let ans = match_and_substitute(s, prog, version);
+    println!("actual: {:?}", ans);
+    println!("expect: {:?}", exp);
+    println!("{}", ans == exp);
+    assert_eq!(ans, exp);
+    println!("{}", "-");
+}
+
+#[test]
+fn match_and_substitute_tests() {
+    let s1="Program title: Primes\nAuthor: Kern\nCorporation: Gold\nPhone: +1-503-555-0091\nDate: Tues April 9, 2005\nVersion: 6.7\nLevel: Alpha";
+    match_and_substitute_test(s1, "Ladder", "1.1", "Program: Ladder Author: g964 Phone: +1-503-555-0090 Date: 2019-01-01 Version: 1.1");
+    let s2="Program title: Balance\nAuthor: Dorries\nCorporation: Funny\nPhone: +1-503-555-0095\nDate: Tues July 19, 2014\nVersion: 6.7\nLevel: Release";
+    match_and_substitute_test(s2, "Circular", "1.5", "Program: Circular Author: g964 Phone: +1-503-555-0090 Date: 2019-01-01 Version: 1.5");
+    let s13="Program title: Primes\nAuthor: Kern\nCorporation: Gold\nPhone: +1-503-555-0090\nDate: Tues April 9, 2005\nVersion: 67\nLevel: Alpha";
+    match_and_substitute_test(s13, "Ladder", "1.1", "ERROR: VERSION or PHONE");
 }
