@@ -161,33 +161,3 @@ fn fp_approx(x: f64) -> f64 {
     // First 4 members of the Maclaurin series of the function sqrt(1 + x) - 1.
     x / 2.0 * (1.0 - x / 4.0 + x * x / 8.0)
 }
-
-// https://www.codewars.com/kata/54b724efac3d5402db00065e
- struct MorseDecoder {
-     morse_code: HashMap<String, String>,
- }
-
-impl MorseDecoder {
-    pub fn new() -> MorseDecoder {
-        MorseDecoder {
-            morse_code: [
-                ("-----", "0"), (".----", "1"), ("..---", "2"), ("...--", "3"), ("....-", "4"),
-                (".....", "5"), ("-....", "6"), ("--...", "7"), ("---..", "8"), ("----.", "9"),
-                (".-", "A"), ("-...", "B"), ("-.-.", "C"), ("-..", "D"), (".", "E"), ("..-.", "F"),
-                ("--.", "G"), ("....", "H"), ("..", "I"), (".---", "J"), ("-.-", "K"), (".-..", "L"),
-                ("--", "M"), ("-.", "N"), ("---", "O"), (".--.", "P"), ("--.-", "Q"), (".-.", "R"),
-                ("...", "S"), ("-", "T"), ("..-", "U"), ("...-", "V"), (".--", "W"), ("-..-", "X"),
-                ("-.--", "Y"), ("--..", "Z")
-            ].iter().map(|(x, y)| (x.to_string(), y.to_string())).collect()
-        }
-    }
-
-    pub fn decode_morse(&self, encoded: &str) -> String {
-        encode.trim().split("   ").map(|w| w.split_ascii_whitespace()
-            .map(|code| self.morse_code.get(code).unwrap().to_owned())
-            .collect::<Vec<String>>()
-            .join("")
-        ).collect::<Vec<String>>()
-        .join(" ")
-    }
-}
