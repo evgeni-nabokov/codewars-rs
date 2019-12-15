@@ -635,7 +635,7 @@ fn fact_string_2dec(s: String) -> u64 {
     let mut res = 0u64;
     for ch in s.chars().rev().skip(1) {
         base *= radix;
-        res += base * ch.to_digit(36).unwrap() as u64;;
+        res += base * ch.to_digit(36).unwrap() as u64;
         radix += 1;
     }
     res

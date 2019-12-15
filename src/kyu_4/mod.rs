@@ -324,3 +324,107 @@ fn remove_char_from_beginning(ch: &char, triplets: &mut [[char; 3]]) {
         }
     }
 }
+
+// https://www.codewars.com/kata/54b72c16cd7f5154e9000457
+// https://www.codewars.com/kata/54b724efac3d5402db00065e
+pub struct MorseDecoder {
+    morse_code: HashMap<String, String>,
+}
+
+impl MorseDecoder {
+    pub fn new() -> MorseDecoder {
+        MorseDecoder {
+            morse_code: [
+                ("-----", "0"), (".----", "1"), ("..---", "2"), ("...--", "3"), ("....-", "4"),
+                (".....", "5"), ("-....", "6"), ("--...", "7"), ("---..", "8"), ("----.", "9"),
+                (".-", "A"), ("-...", "B"), ("-.-.", "C"), ("-..", "D"), (".", "E"), ("..-.", "F"),
+                ("--.", "G"), ("....", "H"), ("..", "I"), (".---", "J"), ("-.-", "K"), (".-..", "L"),
+                ("--", "M"), ("-.", "N"), ("---", "O"), (".--.", "P"), ("--.-", "Q"), (".-.", "R"),
+                ("...", "S"), ("-", "T"), ("..-", "U"), ("...-", "V"), (".--", "W"), ("-..-", "X"),
+                ("-.--", "Y"), ("--..", "Z"), (".-.-.-", "."), ("--..--", ","), ("..--..", "?")
+            ].iter().map(|(x, y)| (x.to_string(), y.to_string())).collect()
+        }
+    }
+
+    pub fn decode_morse(&self, encoded: &str) -> String {
+        if encoded.is_empty() {
+            return "".to_string();
+        }
+        encoded.trim().split("   ").map(|w| w.split_ascii_whitespace()
+            .map(|code| self.morse_code.get(code).unwrap().to_owned())
+            .collect::<Vec<String>>()
+            .join("")
+        ).collect::<Vec<String>>()
+            .join(" ")
+    }
+
+    pub fn decode_bits(&self, encoded: &str) -> String {
+        if encoded.is_empty() {
+            return "".to_string();
+        }
+        let trimmed = encoded.trim_matches('0');
+        let sampling_rate = MorseDecoder::calc_sampling_rate(trimmed);
+        let mut units: Vec<_> = trimmed
+            .chars().step_by(sampling_rate)
+            .map(|ch| ch.to_digit(10).unwrap() as u8)
+            .collect();
+        let mut morse_code: Vec<&str> = Vec::with_capacity(units.len() / sampling_rate);
+        units.push(0); // A stub for one more iteration.
+        let mut one_cnt = 0;
+        let mut zero_cnt = 0;
+        for unit in units {
+            match unit {
+                1 => {
+                    one_cnt += 1;
+                    match zero_cnt {
+                        3 => morse_code.push(" "),
+                        7 => morse_code.push("   "),
+                        _ => {}
+                    }
+                    zero_cnt = 0;
+                },
+                0 => {
+                    zero_cnt += 1;
+                    match one_cnt {
+                        1 => morse_code.push("."),
+                        3 => morse_code.push("-"),
+                        _ => {}
+                    }
+                    one_cnt = 0;
+                },
+                _ => {}
+            }
+        }
+        morse_code.concat()
+    }
+
+    fn calc_sampling_rate(encoded: &str) -> usize {
+        if encoded.is_empty() {
+            return 0;
+        }
+        if encoded.len() == 1 {
+            return 1;
+        }
+        let mut last_bit = encoded.chars().next().unwrap();
+        let mut chars: Vec<char> = encoded.chars().skip(1).collect();
+        chars.push('0'); // A stub for one more iteration.
+        let mut cnt = 1;
+        let mut min_cnt = 0;
+        for &bit in chars.iter() {
+            if last_bit == bit {
+                cnt += 1;
+            } else {
+                if cnt == 1 {
+                    return cnt;
+                } else {
+                    if min_cnt == 0 || cnt < min_cnt {
+                        min_cnt = cnt;
+                    }
+                    cnt = 1;
+                }
+                last_bit = bit;
+            }
+        }
+        min_cnt
+    }
+}
