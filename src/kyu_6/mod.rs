@@ -161,3 +161,19 @@ fn fp_approx(x: f64) -> f64 {
     // First 4 members of the Maclaurin series of the function sqrt(1 + x) - 1.
     x / 2.0 * (1.0 - x / 4.0 + x * x / 8.0)
 }
+
+// https://www.codewars.com/kata/51e0007c1f9378fa810002a9
+fn deadfish_parse(code: &str) -> Vec<i32> {
+    let mut result: Vec<i32> = Vec::new();
+    let mut value = 0;
+    for c in code.chars() {
+        match c {
+            'i' => value += 1,
+            'd' => value -= 1,
+            's' => value *= value,
+            'o' => result.push(value),
+            _ => {}
+        }
+    }
+    result
+}

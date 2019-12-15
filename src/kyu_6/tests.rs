@@ -114,3 +114,11 @@ fn decode_morse_test() {
     let decoder = MorseDecoder::new();
     assert_eq!(decoder.decode_morse(".... . -.--   .--- ..- -.. ."), "HEY JUDE");
 }
+
+#[test]
+fn deadfish_parse_test() {
+    assert_eq!(deadfish_parse("iiisdoso"),
+               vec![8, 64]);
+    assert_eq!(deadfish_parse("iiisdosodddddiso"),
+               vec![8, 64, 3600]);
+}
