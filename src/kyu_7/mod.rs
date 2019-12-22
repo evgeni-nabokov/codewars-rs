@@ -37,3 +37,11 @@ fn min_value(mut digits: Vec<i32>) -> i32 {
 fn passengers_in_bus(bus_stops:&[(i32, i32)]) -> i32 {
     bus_stops.iter().fold(0, |sum, &(ppl_in, ppl_out)| sum + ppl_in - ppl_out)
 }
+
+// https://www.codewars.com/kata/56747fd5cb988479af000028
+fn get_middle(s: &str) -> &str {
+    if s.len() < 2 {
+        return s;
+    }
+    &s[(s.len()-1)/2..s.len()/2+1]
+}

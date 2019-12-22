@@ -29,3 +29,14 @@ fn passengers_in_bus_tests() {
     assert_eq!(passengers_in_bus(&[(3, 0), (9, 1), (4, 10), (12, 2), (6, 1), (7, 10)]), 17);
     assert_eq!(passengers_in_bus(&[(3, 0), (9, 1), (4, 8), (12, 2), (6, 1), (7, 8)]), 21);
 }
+
+#[test]
+fn get_middle_tests() {
+    assert_eq!(get_middle(""), "");
+    assert_eq!(get_middle("a"), "a");
+    assert_eq!(get_middle("test"), "es");
+    assert_eq!(get_middle("testing"), "t");
+    assert_eq!(get_middle("middle"), "dd");
+    assert_eq!(get_middle("A"), "A");
+    assert_eq!(get_middle("of"), "of");
+}
