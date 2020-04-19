@@ -2,6 +2,7 @@
 extern crate maplit;
 
 mod common;
+mod kyu_2;
 mod kyu_3;
 mod kyu_4;
 mod kyu_5;
