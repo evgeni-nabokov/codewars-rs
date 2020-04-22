@@ -60,14 +60,8 @@ fn last_digit_tests() {
 }
 
 fn buddy_numbers_test(start: u64, limit: u64, exp: Option<(u64, u64)>) -> () {
-    println!("start:{}", start);
-    println!("limit:{}", limit);
     let ans = buddy_numbers(start, limit);
-    println!("actual:\n{:?}", ans);
-    println!("expect:\n{:?}", exp);
-    println!("{}", ans == exp);
     assert_eq!(ans, exp);
-    println!("{}", "-");
 }
 
 #[test]
@@ -80,14 +74,8 @@ fn buddy_numbers_tests() {
 
 fn find_x_of_pseries_test(m: f64, expect: f64) -> () {
     let merr = 1e-12;
-    println!("{:?}", m);
     let actual = find_x_of_pseries(m);
-    println!("Actual {:e}", actual);
-    println!("Expect {:e}", expect);
     let inrange = (actual - expect).abs() <= merr;
-    if inrange == false {
-        println!("Expected value near: {:e} but got: {:e}", actual, expect);
-    }
     assert_eq!(inrange, true);
 }
 
@@ -106,11 +94,6 @@ fn sum_of_series_test(actual: f64, expected: f64) {
         } else {
             ((actual - expected).abs() / expected <= merr)
         };
-    if inrange == false {
-        println!("Expected value must be near: {:e} but was:{:e}", expected, actual);
-    } else {
-        //println!("....... GOOD\n");
-    }
     assert_eq!(true, inrange);
 }
 
@@ -172,13 +155,8 @@ fn get_phone_directory_input() -> String {
 }
 
 fn phone_directory_test(dir: &str, num: &str, exp: &str) -> () {
-    println!("num:{}", num);
     let ans = phone_directory(dir, num);
-    println!("actual:\n{}", ans);
-    println!("expect:\n{}", exp);
-    println!("{}", ans == exp);
     assert_eq!(ans, exp);
-    println!("{}", "-");
 }
 
 #[test]
@@ -203,13 +181,8 @@ fn consec_kprimes_tests() {
 }
 
 fn factorial_decomp_test(n: u64, exp: &str) -> () {
-    println!("n:{:?}", n);
     let ans = factorial_decomp(n);
-    println!("actual: {:?}", ans);
-    println!("expect: {:?}", exp.to_string());
-    println!("{}", ans == exp.to_string());
     assert_eq!(ans, exp.to_string());
-    println!("{}", "-");
 }
 
 #[test]
@@ -434,15 +407,8 @@ fn fact_string_2dec_tests() {
 }
 
 fn match_and_substitute_test(s: &str, prog: &str, version: &str, exp: &str) -> () {
-    println!("s:{:?}", s);
-    println!("prog:{:?}", prog);
-    println!("version:{:?}", version);
     let ans = match_and_substitute(s, prog, version);
-    println!("actual: {:?}", ans);
-    println!("expect: {:?}", exp);
-    println!("{}", ans == exp);
     assert_eq!(ans, exp);
-    println!("{}", "-");
 }
 
 #[test]

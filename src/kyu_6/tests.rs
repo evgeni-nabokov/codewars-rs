@@ -50,13 +50,7 @@ fn backwards_prime_tests() {
 }
 
 fn travel_test(r: &str, zip_code: &str, exp: &str) -> () {
-    println!("zip code:{:?}", zip_code);
-    let ans = travel(r, zip_code);
-    println!("actual: {:?}", ans);
-    println!("expect: {:?}", exp);
-    println!("{}", ans == exp);
-    assert_eq!(ans, exp);
-    println!("{}", "-");
+    assert_eq!(travel(r, zip_code), exp);
 }
 
 #[test]
@@ -97,9 +91,7 @@ fn assert_fuzzy_equals(actual: f64, expected: f64) {
     if inrange == false {
         println!("Expected value must be near: {:e} but was:{:e}", expected, actual);
     } else {
-        //println!("....... GOOD\n");
     }
-    //println!("{}", inrange);
     assert_eq!(true, inrange)
 }
 
