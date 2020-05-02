@@ -428,3 +428,42 @@ impl MorseDecoder {
         min_cnt
     }
 }
+
+// https://www.codewars.com/kata/55983863da40caa2c900004e
+fn next_bigger_number(n: i64) -> i64 {
+    if n < 10 { return -1; }
+    // Decompose 'n' into digits.
+    // Note: the vector 'digits' will keep digits in reverse order.
+    let mut digits = Vec::new();
+    let mut nn = n.clone();
+    while nn > 0 {
+        digits.push(nn % 10);
+        nn = nn / 10;
+    }
+    // Compare digits and rearrange.
+    for i in 1..digits.len() {
+        if digits[i] < digits[i - 1] {
+            // Remember the digit to compare.
+            let d = digits[i];
+            // Sort slice of the left-most digits in asc order.
+            // This will allow us to find the first digit that is greater than 'd'.
+            digits[0..i].sort_unstable();
+            // Find the index of the first digit that is greater than 'd'.
+            let mut idx = 0;
+            for (j, sd) in digits[0..i].iter().enumerate() {
+                if *sd > d {
+                    idx = j;
+                    break;
+                }
+            }
+            digits.swap(i, idx);
+            // Reverse sorted slice to comply with the reverse order of entire 'digits'.
+            digits[0..i].reverse();
+            // Arrange digits in the natural order.
+            digits.reverse();
+            // Assemble digits into a number.
+            return digits.iter().fold(0i64, |acc, &item| acc * 10  + item)
+        }
+    }
+    -1
+}

@@ -245,3 +245,23 @@ fn decode_bits_test() {
         assert_eq!(decoder.decode_morse(&decoded_bits), case[1]);
     }
 }
+
+#[test]
+fn next_bigger_number_tests() {
+    let cases = [
+        (9, -1),
+        (10, -1),
+        (11, -1),
+        (531, -1),
+        (12, 21),
+        (122, 212),
+        (513, 531),
+        (2017, 2071),
+        (14321, 21134),
+        (1234567890, 1234567908),
+        (59884848459853, 59884848483559)
+    ];
+    for case in cases.iter() {
+        assert_eq!(next_bigger_number(case.0), case.1);
+    }
+}
