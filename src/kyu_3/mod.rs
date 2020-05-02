@@ -1,7 +1,7 @@
-use super::common::*;
-
 #[cfg(test)]
 mod tests;
+
+use super::common::*;
 
 // https://www.codewars.com/kata/5518a860a73e708c0a000027
 fn last_digit2(list: &[u64]) -> u64 {
@@ -80,4 +80,53 @@ fn try_to_reduce_list(list: &[u64]) -> Vec<u64> {
         }
     }
     reduced_list
+}
+
+fn spiralize(size: usize) -> Vec<Vec<i8>> {
+    let mut res = vec![vec![0i8; size]; size];
+    let mut curr_size = size;
+    let mut left_col = 0;
+    let mut top_row = 0;
+    while curr_size >= 5 {
+        // Top & bottom.
+        for col in 0..curr_size {
+            res[top_row][left_col + col] = 1;
+            res[top_row + curr_size - 1][left_col + col] = 1;
+        }
+        // Left & right.
+        for row in 2..curr_size {
+            res[top_row + row][left_col] = 1;
+            res[top_row + row][left_col + curr_size - 1] = 1;
+        }
+        // Special cases.
+        res[top_row + 2][left_col + 1] = 1;
+        res[top_row + 1][left_col + curr_size - 1] = 1;
+        // Move to the smaller circle.
+        curr_size -= 4;
+        left_col += 2;
+        top_row += 2;
+    }
+    // Fill the rest depending on the core's size.
+    if curr_size == 1 {
+        res[top_row][left_col] = 1;
+    } else {
+        let rem: Vec<Vec<Vec<i8>>> = vec![
+            vec![vec![1, 1],
+                 vec![0, 1]],
+            vec![vec![1, 1, 1],
+                 vec![0, 0, 1],
+                 vec![1, 1, 1]],
+            vec![vec![1, 1, 1, 1],
+                 vec![0, 0, 0, 1],
+                 vec![1, 0, 0, 1],
+                 vec![1, 1, 1, 1]],
+        ];
+        let v = &rem[curr_size - 2];
+        for row in 0..curr_size {
+            for col in 0..curr_size {
+                res[top_row + row][left_col + col] = v[row][col];
+            }
+        }
+    }
+    res
 }
