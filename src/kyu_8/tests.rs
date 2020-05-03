@@ -29,3 +29,10 @@ fn expressions_matter_tests() {
     assert_eq!(expressions_matter(10, 5, 6), 300);
     assert_eq!(expressions_matter(1, 10, 1), 12);
 }
+
+#[test]
+fn positive_sum_tests() {
+    assert_eq!(positive_sum(&[1,2,3,4,5]), 15);
+    assert_eq!(positive_sum(&[1,-2,3,4,5]), 13);
+    assert_eq!(positive_sum(&[-1,2,3,4,-5]), 9);
+}
