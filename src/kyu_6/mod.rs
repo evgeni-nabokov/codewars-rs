@@ -177,3 +177,8 @@ fn deadfish_parse(code: &str) -> Vec<i32> {
     }
     result
 }
+
+// https://www.codewars.com/kata/523f5d21c841566fde000009
+fn array_diff<T: PartialEq>(a: Vec<T>, b: Vec<T>) -> Vec<T> {
+    a.into_iter().filter(|item| !b.contains(item)).collect()
+}
