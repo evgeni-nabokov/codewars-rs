@@ -74,16 +74,22 @@ fn prime_gap(g: i32, m: u64, n: u64) -> Option<(u64, u64)> {
 fn product_fib(prod: u64) -> (u64, u64, bool) {
     let mut f0 = 0u64;
     let mut f1 = 1u64;
-    while f0 * f1 < prod {
+    loop {
+        let q = prod / f1;
+        let r = prod % f1;
+        if q == f0 && r == 0 {
+            return (f0, f1, true);
+        } else if q < f0 {
+            return (f0, f1, false);
+        }
         let tmp = f1;
         f1 += f0;
         f0 = tmp;
     }
-    (f0, f1, f0 * f1 == prod)
 }
 
 // https://www.codewars.com/kata/5726f813c8dcebf5ed000a6b
-// Finds prime factorization. If a number is prime, returns an empty Vec.
+// Finds prime factorization. If a number is prime, returns vec![n].
 // I made it as fast as I could.
 fn get_prime_factors(n: &u64) -> Vec<u64> {
     let mut res: Vec<u64> = Vec::new();

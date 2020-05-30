@@ -22,8 +22,13 @@ fn prime_gap_tests() {
 
 #[test]
 fn product_fib_tests() {
+    assert_eq!(product_fib(1), (1, 1, true));
+    assert_eq!(product_fib(2), (1, 2, true));
     assert_eq!(product_fib(4895), (55, 89, true));
     assert_eq!(product_fib(5895), (89, 144, false));
+    assert_eq!(product_fib(5456077604922913900), (1836311903, 2971215073, false));
+    assert_eq!(product_fib(5456077604922913919), (1836311903, 2971215073, true));
+    assert_eq!(product_fib(5456077604922913920), (2971215073, 4807526976, false));
 }
 
 #[test]
